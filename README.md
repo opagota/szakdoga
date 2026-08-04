@@ -1,1 +1,2 @@
 # szakdoga
+csak formalitás:D
