@@ -40,7 +40,7 @@
 \subsection{Célkitűzés}
 A huszadik század eleje óta -- többek között a ,,bergeni iskola" neves kutatóinak köszönhetően -- ismerjük a légkör működését leíró nemlineáris egyenletrendszert, az úgynevezett kormányzó egyenleteket. Az időjárás-előrejelzés hagyományosan ezen egyenletrendszer integrálásán alapul, melyet szuperszámítógépeken futó numerikus modellek hajtanak végre (\textit{Numerical Weather Prediction, NWP}). Az utóbbi években jelentős áttörés történt az időjárás-előrejelzés területén: a 2020-as évek elején megjelentek a gépi tanulás alapuló időjárás-előrejelző modellek (\textit{Machine Learning-based Weather Prediction, MLWP}). A gépi tanulás alapú modellek rekonstruált historikus időjárási adatokból -- úgynevezett reanalízis adatokból --, illetve operatív NWP-előrejelzésekből tanulják meg a légköri folyamatok mintázatait, és ezáltal képesek a kiinduló adatok -- a peremfeltételek -- ismeretében predikciót adni a jövő várható időjárására. Az eltérő megközelítés folytán több előny és hátrány is megjelenik a hagyományos NWP-modellekhez képest.
 
-Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető [\textit{cite fourcastnet}]. A 2022 óta eltelt években sorra jelentek meg a determinisztikus és ensemble MLWP-modellek (pl. Huawei Pangu-Weather, 2023; Google GraphCast, 2023; ECMWF-AIFS, 2024; Google GenCast, 2024; ECMWF AIFS ENS, 2025), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
+Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető [\textit{cite fourcastnet}]. A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023; Google GraphCast, 2023; FuXi, 2023; FengWu, 2023; illetve néhány ensemble modell: ECMWF-AIFS, 2024; Google GenCast, 2024; ECMWF AIFS ENS, 2025), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
 
 
 A további fejlesztés mellett szól az adatalapú megközelítésből adódó alapvető hátulütők kiküszöbölésére való törekvés is. Egyik ilyen abból ered, hogy a modellek gyakran valamilyen négyzetes hiba, mint a négyzetes középhiba (\textit{MSE}) alapú költségfüggvény minimalizálására vannak betanítva. Ennek következtében igyekeznek elkerülni a szélsőséges értékek predikcióját, mivel tévesen megállapított kiugró érték jelentős büntetést eredményezne. Az ilyen módon előálló szélsőérték-kerülést nevezzük ,,smoothing"-nak, utalva arra, hogy a kiugró csúcsok mintegy elmosásra kerülnek. 
@@ -49,7 +49,7 @@ Másrészt -- mivel a modell nem ismeri a légköri kormányzó egyenleteket, ha
 
 Többek között a fentebb említett hibák miatt a szakirodalom jelenleg nem tekinti az MLWP modelleket a légkör megfelelő szimulátorainak [\textit{cite Bonavita}]. A szakirodalomban azonban még nem sok kutatás tűzte ki céljául a gépi tanulás alapú időjárás-előrejelző modellek kaotikus tulajdonságainak vizsgálatát. Kutatásomban így azt szeretném megvizsgálni, hogy a fizikai törvények helyett adatokon alapuló megközelítés kimutathatatlanná teszi-e az előrejelzésekben a légkör egy alapvető tulajdonságát, a káoszt. Amennyiben a modellek nem tudják reprodukálni a kaotikus jegyeket, úgy hamis biztosságot adhatnak a hosszú távú előrejelzések megbízhatóságára [\textit{cite, valahol olvastam ezt így}]. Ha azonban észlelhető a káosz a modell előrejelzéseiben, az azt jelenti, hogy az adatalapú tanítás következtében mégsem vész el minden fizikai törvényszerűség.
 
-\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
+\subsection{Gépi tanulás alapfogalmai}
 
 A mesterséges intelligencia fogalmát John McCarthy, Marvin Minsky, Claude Shannon és Nathaniel Rochester alkották meg 1956-ban a Dartmouth workshop-on (\textit{Dartmouth Summer Research Project on Artificial Intelligence}). Felvetett elvük azon alapult, hogy "a tanulás minden aspektusa, vagy az intelligencia bármely más jellemzője elvileg olyan pontosan leírható, hogy egy géppel azt szimulálni lehet". A mesterséges intelligencia tehát a gondolkodás automatizálását jelenti, a gépi tanulás pedig egy módszer ennek elérésére [\textit{cite Moor, Choi et al.}]. 
 
@@ -57,12 +57,19 @@ A tanulás általános fogalma új ismeretek, képességek és viselkedésmintá
 
 A gépi tanulás megvalósítása korábban statisztikai módszerekkel, mint a lineáris regresszió történt. Az elmúlt évtizedekben kezdték el gépi tanítás céljából alkalmazni a mesterséges neurális hálózatokat (\textit{Artificial Neural Network, ANN}), melyek az emberi agy működését imitálják. A hálózat csomópontokból áll, a neuronok pedig kapcsolatokon keresztül kommunikálnak egymással. A csomópontok a biológiai neuron sejttestének feleltethetőek meg, a kapcsolatok pedig hasonlóan működnek, mint az idegsejtek kapcsolódásáért felelős axonok és dendritek. A biológiai neuronok közti kapcsolódási pont a szinapszis, ami erősödik, ha a két neuron gyakran aktiválódik együtt. A mesterséges neuronok közti kapcsolat erősségét a súlyok (\textit{weight}) határozzák meg. A tanulás folyamata során a cél, hogy a neurális háló kimenetele minél jobban megközelítse a kívánt kimenetelt; ennek érdekében a súlyok erőssége kerül változtatásra [\textit{cite Choi}].
 
+A neurális hálózatoknak több típusa létezik
+
+
+
+
+\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
+
 Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják, azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív előrejelzést lehessen készíteni segítségével. Az MLWP-modellek több évtizednyi időjárási adat feldolgozása során fedezik fel a kapcsolatokat a légköri változók között, a kapcsolat ismeretében pedig már képesek előrejelzést is készíteni. A kapcsolat azonban nincs szabályozva a fizikai törvények által, ami az MLWP-modellek ,,fekete doboz" jellegét okozza. Ha viszont nem csak az ismert fizikai törvények érvényesülnek az előrejelzés készítése során, a hibás előrejelzések okának feltárása és a javítás rendkívül nehézzé válik [\textit{cite de Burgh-Day}].
 
 
-[modellek fajtái, milyen NN-eket használnak, hogy működnek nagyjából ezek az NN-ek, példák, különös tekintettel az AIFS-re]
+A következőkben néhány MLWP-modell működésén keresztül szeretném felvázolni, hogy miképpen lehet alkalmazni a gépi tanulásos architektúrákat az időjárás előrejelzésére.
 
-[mennyire kell belemenni a NN-ek matematikájába?]
+A 2023-ban nyilvánosságra hozott NVIDIA FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) modell Fourier neurális hálózat alapú. Ez a fajta neurális hálózat Fourier Neural Operator-ok (\textit{FNO}) és Vision Transformer-ek (\textit{ViT}) együttes használatával létrejött Adaptive Fourier Neural Operator-ok (\textit{AFNO}) segítségével épül fel. 
 
 \subsection{Káoszelméleti bevezetés}
 
