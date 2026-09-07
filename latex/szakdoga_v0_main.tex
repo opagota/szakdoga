@@ -71,13 +71,22 @@ Az aktivációs függvény lehet pl. küszöb függvény (negatív értékekre 0
 
 A neurális hálózatok neuronrétegekből állnak. A neurális hálózat szerkezetét általánosan architektúrának nevezzük. Egyrétegű neurális hálózat esetén a bemenet és kimenet közt egyszeres összeköttetés van, azonban a gyakorlatban általában több neuronrétegből alkotják meg a neurális hálózatot. A több réteg (melyeket rejtett rétegeknek nevezünk -- \textit{hidden layers}) a bemeneti és kimeneti adatok közt több kapcsolatot jelent, és képes komplexebb összefüggések megtanulására is. A neuronok közti adattovábbítás iránya szerint megkülönböztetünk előrecsatolt neurális hálózatokat (\textit{Feedforward Neural Network, FNN}), illetve rekurrens neurális hálózatokat (\textit{Recurrent Neural Network, RNN}). Az FNN-ekben nincsenek visszacsatolt kapcsolatok (\textit{feedback}), ahol a modellkimenetek önmagukba visszakapcsolódhatnának. Ha a rejtett rétegek közt rekurrens kapcsolatokat is megengedünk, RNN-ről beszélünk. A rekurrens kapcsolatok egyfajta memóriát adnak a neurális hálózatnak, ezzel pedig lehetővé teszik pl. kontextus értelmezését \cite{Goodfellow2016}.
 
+Az utóbbi években mind jobban elterjedő modellek transzformer architektúrán alapszanak, így működik pl. a ChatGPT is. A transzformer modelleket először a Google kutatói által 2017-ben publikált ,,Attention Is All You Need" című cikk említette, amely azóta a mesterséges intelligencia-kutatás egyik alapművévé vált; több tízezernyi cikk hivatkozik rá \cite{vaswani_attention_2017, amatriain_transformer_2024}. A transzformer modellek egyfajta encoder-decoder modellek. %Andris szakdogájában ezt a részt elolvasni!!
+
+inputja egy sorozatnyi token (a token a szekvenciális adat felépítő részét jelenti, például egy mondatban a szavakat, vagy egy szóban a szótagokat/betűket). A transzformer ezután reprezentációt készít minden tokenről
+
 Az időjárás előrejelzésére sokféle architektúrát alkalmaznak, a következő fejezetben ezek közül szeretnék néhányat bemutatni.
 
 \subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
 
 Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban [\textit{cite Hung et al.}]), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével. Az MLWP-modellek több évtizednyi időjárási adat feldolgozása során fedezik fel a kapcsolatokat a légköri változók között, a kapcsolat ismeretében pedig már képesek előrejelzést készíteni. A kapcsolat azonban nincs szabályozva a fizikai törvények által, ami az MLWP-modellek ,,fekete doboz" jellegét okozza \cite{de_burgh-day_machine_2023}.
 
-Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. A hálózatot úgynevezett adaptív Fourier neurális operátorok (\textit{Adaptive Fourier Neural Operator, AFNO}) alkotják. A neurális operátorok olyan gépi tanuláshoz használt architektúrák, melyek -- ellenben a végtelen dimenziós függvényterek közti leképezésekkel -- végtelen dimenziós függvényterek közti leképezést hajtanak végre \cite{kovachki_neural_2024}. Ha ezeket az operátorokat a függvényterek Fourier-terén hattatjuk, Fourier neurális operátorokról (\textit{Fourier Neural Operator, FNO}) beszélünk \cite{pathak_fourcastnet_2022}. Az AFNO FNO és Vision Transformer architektúrák (\textit{ViT}) együttes használatával épül fel. A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
+Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. A hálózatot úgynevezett adaptív Fourier neurális operátorok (\textit{Adaptive Fourier Neural Operator, AFNO}) alkotják. A neurális operátorok olyan gépi tanuláshoz használt architektúrák, melyek végtelen dimenziós függvényterek közti leképezést hajtanak végre \cite{kovachki_neural_2024}. Ha ezeket az operátorokat a függvényterek Fourier-terén hattatjuk, Fourier neurális operátorokról (\textit{Fourier Neural Operator, FNO}) beszélünk \cite{li_fourier_2021}. Az AFNO egy olyan token mixer, 
+
+NO és vision transformer architektúrák (\textit{ViT}) együttes használatával épül fel.
+
+
+A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
 
 %\subsection{Káoszelméleti bevezetés}
 
