@@ -4,34 +4,6 @@
 
 
 \begin{document}
-\begin{titlepage}
-    \centering
-    \vspace*{1cm}
-    {\large Eötvös Loránd Tudományegyetem Természettudományi Kar\par}
-    \vspace{0.5cm}
-    {\Huge \bfseries A gépi tanuláson alapuló időjárás-előrejelző modellek kaotikus tulajdonságainak vizsgálata\par}
-    \vspace{1cm}
-    {\Large Szakdolgozat \par}
-    {\large Fizika alapszak \par}
-    {\large Meteorológus specializáció \par}
-    
-    \vspace{2cm}
-    \includegraphics[width=12cm]{elte_logo.png}
-    \vspace{2cm}
-    
-
-    {\Large
-    Készítette: \textbf{Opposits Ágota}\par}
-    \vspace{0.5cm}
-    {\Large Témavezetők:\par }
-    {\Large \textbf{Leelőssy Ádám} \par}
-    {\large ELTE Meteorológiai Tanszék\par}
-    {\Large \textbf{Haszpra Tímea} \par}
-    {\large ELTE Elméleti Fizikai Tanszék\par}
-    \vspace{2cm}
-    {\Large Budapest, 2027 \par}
-    
-\end{titlepage}
 
 \tableofcontents
 \newpage
@@ -41,20 +13,53 @@
 \subsection{Célkitűzés}
 A huszadik század eleje óta -- többek között a ,,bergeni iskola" neves kutatóinak köszönhetően -- ismerjük a légkör működését leíró nemlineáris egyenletrendszert, az úgynevezett kormányzó egyenleteket. Az időjárás-előrejelzés hagyományosan ezen egyenletrendszer integrálásán alapul, melyet szuperszámítógépeken futó numerikus modellek hajtanak végre (\textit{Numerical Weather Prediction, NWP}). Az utóbbi években jelentős áttörés történt az időjárás-előrejelzés területén: a 2020-as évek elején megjelentek a gépi tanulás alapuló időjárás-előrejelző modellek (\textit{Machine Learning-based Weather Prediction, MLWP}). A gépi tanulás alapú modellek rekonstruált historikus időjárási adatokból -- úgynevezett reanalízis adatokból --, illetve operatív NWP-előrejelzésekből tanulják meg a légköri folyamatok mintázatait, és ezáltal képesek a kiinduló adatok -- a peremfeltételek -- ismeretében predikciót adni a jövő várható időjárására. Az eltérő megközelítés folytán több előny és hátrány is megjelenik a hagyományos NWP-modellekhez képest.
 
-Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető \cite{pathak_fourcastnet_2022}. A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023; Google GraphCast, 2023; FuXi, 2023; FengWu, 2023; illetve néhány ensemble modell: ECMWF-AIFS, 2024; Google GenCast, 2024; ECMWF AIFS ENS, 2025), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
+Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető \cite{pathak_fourcastnet_2022}. A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023; Google GraphCast, 2023; FuXi, 2023; FengWu, 2023; ECMWF-AIFS, 2024; illetve néhány ensemble modell: Google GenCast, 2024; ECMWF AIFS ENS, 2025), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
 
 
 A további fejlesztés mellett szól az adatalapú megközelítésből adódó alapvető hátulütők kiküszöbölésére való törekvés is. Egyik ilyen abból ered, hogy a modellek gyakran valamilyen négyzetes hiba, mint a négyzetes középhiba (\textit{Mean Squared Error, MSE}) alapú költségfüggvény minimalizálására vannak betanítva. Ennek következtében igyekeznek elkerülni a szélsőséges értékek predikcióját, mivel tévesen megállapított kiugró érték jelentős büntetést eredményezne. Az ilyen módon előálló szélsőérték-kerülést nevezzük ,,smoothing"-nak, utalva arra, hogy a kiugró csúcsok mintegy elmosásra kerülnek. 
 
-Másrészt -- mivel a modell nem ismeri a légköri kormányzó egyenleteket, hanem csak korábbi időjárási adatok mintázataiból tanul -- elvileg lehetséges a fizikai valósággal inkonzisztens előrejelzés készítése is. Ilyen volt pl. az ECMWF-AIFS egy korábbi verziójának az a hibája, hogy negatív csapadékmennyiséget jelzett előre \cite{moldovan_update_2025}. A modellfejlesztők a valósághű predikciókat elérendő fizikai kényszerfeltételek bevezetésével korlátozzák a modellt. 
+Másrészt -- mivel a modell nem ismeri a légköri kormányzó egyenleteket, hanem csak korábbi időjárási adatok mintázataiból tanul -- elvileg lehetséges a fizikai valósággal inkonzisztens előrejelzés készítése is. Ilyen volt pl. az ECMWF-AIFS egy korábbi verziójának az a hibája, hogy negatív csapadékmennyiséget jelzett előre. A modellfejlesztők a valósághű predikciókat elérendő fizikai kényszerfeltételek bevezetésével korlátozzák a modellt \cite{moldovan_update_2025}. 
 
-Többek között a fentebb említett hibák miatt a szakirodalom jelenleg nem tekinti az MLWP modelleket a légkör megfelelő szimulátorainak \cite{bonavita_limitations_2024}. A szakirodalomban azonban még nem sok kutatás tűzte ki céljául a gépi tanulás alapú időjárás-előrejelző modellek kaotikus tulajdonságainak vizsgálatát. Kutatásomban így azt szeretném megvizsgálni, hogy a fizikai törvények helyett adatokon alapuló megközelítés kimutathatatlanná teszi-e az előrejelzésekben a légkör egy alapvető tulajdonságát, a káoszt. Amennyiben a modellek nem tudják reprodukálni a kaotikus jegyeket, úgy hamis biztosságot adhatnak a hosszú távú előrejelzések megbízhatóságára \cite{selz_can_2023}. Ha azonban észlelhető a káosz a modell előrejelzéseiben, az azt jelenti, hogy az adatalapú tanítás következtében mégsem vész el minden fizikai törvényszerűség.
+Többek között a fentebb említett hibák miatt a szakirodalom jelenleg nem tekinti az MLWP modelleket a légkör megfelelő szimulátorainak \cite{bonavita_limitations_2024}. A szakirodalomban azonban még nem sok kutatás tűzte ki céljául a gépi tanulás alapú időjárás-előrejelző modellek kaotikus tulajdonságainak vizsgálatát. Kutatásomban azt szeretném megvizsgálni, hogy a fizikai törvények helyett adatokon alapuló megközelítés kimutathatatlanná teszi-e az előrejelzésekben a légkör egy alapvető tulajdonságát, a káoszt. Amennyiben a modellek nem tudják reprodukálni a kaotikus jegyeket, úgy hamis biztosságot adhatnak a hosszú távú előrejelzések megbízhatóságára \cite{selz_can_2023}. Ha azonban észlelhető a káosz a modell előrejelzéseiben, az azt jelenti, hogy az adatalapú tanítás következtében mégsem vész el minden fizikai törvényszerűség.
 
-\subsection{Mesterséges neurális hálózatok alapfogalmai}
+\subsection{A mesterséges intelligencia és gépi tanulás}
 
-A mesterséges intelligencia fogalmát John McCarthy, Marvin Minsky, Claude Shannon és Nathaniel Rochester alkották meg 1956-ban a Dartmouth workshop-on (\textit{Dartmouth Summer Research Project on Artificial Intelligence}). Felvetett elvük azon alapult, hogy ,,a tanulás minden aspektusa, vagy az intelligencia bármely más jellemzője elvileg olyan pontosan leírható, hogy egy géppel azt szimulálni lehet". A mesterséges intelligencia tehát a gondolkodás automatizálását jelenti, a gépi tanulás pedig egy módszer ennek elérésére \cite{moor_dartmouth_2006,choi_introduction_2020}. A tanulás általános fogalma új ismeretek, képességek és viselkedésminták elsajátítását vagy módosítását jelenti. A mintázatok megismerése által lehetővé válik a jövőre vonatkozó előrejelzések készítése. Gépek esetében a tanuláshoz szükséges tapasztalatszerzés adatok alapján, mintázatfelismerés által történik \cite{alzubi_machine_2018}. A gépi tanulás tehát a bemeneti és kimeneti adatok kapcsolatát leíró függvény megkeresését jelenti; ezen függvény megkeresését tanításnak (\textit{training}) nevezzük. A függvény ismeretében a következtetési folyamat (\textit{inference}) során új értékek jelezhetőek előre. A tanításhoz felhasznált adatok általában múltbeli megfigyelésekből állnak. A megfigyelések tartalmazzák a vizsgált dolog jellemzőit (\textit{feature}; $x$-el szoktuk jelölni), illetve a már ismert értékét, a címkét (\textit{label}; $y$-al szoktuk jelölni). \cite{microsoft_introduction_2026}. Mivel gyakran a jellemzők, illetve a címkék is vektorok, a gépi tanulás során megtanult függvény (modell) egy véges dimenziós vektorterek közötti leképezés. Az ilyen módon kapott modell kimenetét $\hat{y}$-al szokás jelölni.
+A mesterséges intelligencia fogalmát John McCarthy, Marvin Minsky, Claude Shannon és Nathaniel Rochester alkották meg 1956-ban a Dartmouth workshop-on (\textit{Dartmouth Summer Research Project on Artificial Intelligence}). Felvetett elvük azon alapult, hogy ,,a tanulás minden aspektusa, vagy az intelligencia bármely más jellemzője elvileg olyan pontosan leírható, hogy egy géppel azt szimulálni lehet" \cite{moor_dartmouth_2006,choi_introduction_2020}. A tanulás általános fogalma új ismeretek, képességek és viselkedésminták elsajátítását vagy módosítását jelenti. A mintázatok megismerése által lehetővé válik a jövőre vonatkozó előrejelzések készítése. Gépek esetében a tanuláshoz szükséges tapasztalatszerzés adatok alapján, mintázatfelismerés által történik; ezt nevezzük gépi tanulásnak \cite{alzubi_machine_2018}. 
 
-A gépi tanulás hagyományosan statisztikai módszerek segítségével tanul a megfigyelt adatokból. Ezzel szemben az elmúlt években egyre gyakrabban használt mélytanulás (\textit{Deep Learning, DL}) mesterséges neurális hálózatok (\textit{Artificial Neural Network, ANN}) segítségével képes megtanulni az adatbázisban fennálló komplex kapcsoaltokat \cite{sharifani_machine_2023}. Az ANN-ek az emberi agy működését imitálják. A hálózat csomópontokból áll, az információ feldolgozásáért felelős neuronok pedig kapcsolatokon keresztül kommunikálnak egymással \cite{sharkawy_principle_2020}. A csomópontok a biológiai neuron sejttestének feleltethetőek meg, a kapcsolatok pedig hasonlóan működnek, mint az idegsejtek kapcsolódásáért felelős axonok és dendritek. A biológiai neuronok közti kapcsolódási pont a szinapszis, ami erősödik, ha a két neuron gyakran aktiválódik együtt. A mesterséges neuronok közti kapcsolat erősségét a súlyok (\textit{weight}) határozzák meg \cite{choi_introduction_2020}.
+Az első gépi tanulás alapú technológia az 1990-es években lett népszerű, amikor megjelentek az elektronikus levelezőrendszerekben a spamfilterek: a szűrő felhasználói bejelentésekből származó adatokon lett betanítva, megtanulva, hogy milyen jellemzői vannak egy spam e-mailnek. Az ezt követő évtizedekben egyre több gépi tanulás alapú technológia jelent meg, gondolhatunk itt a mindennapokban gyakran használt beszédfelismerő eszközökre vagy a közösségi média tartalomajánló algoritmusaira \cite{geron_hands-machine_2017}. A gépi tanulást 1959-ben Arthur Samuel amerikai informatikus így definiálta \cite{lee_machine_2017}: 
+\begin{displayquote}
+    \textit{A gépi tanulás képessé teszi a számítógépeket a tanulásra anélkül, hogy explicit módon programoznánk őket.} 
+\end{displayquote}
+Egzaktabb definíciót nyújt Tom Mitchell szintén amerikai informatikus megfogalmazása \cite{mitchell_discipline_2006}: 
+\begin{displayquote}
+\textit{Egy számítógépes program valamilyen T feladat elvégzése érdekében -- melynek sikerességét valamely P teljesítményt értékelő mérőszám jellemzi -- E tapasztalatból tanul, ha a T elvégzése során nyújtott teljesítménye P mérőszámmal mérve az E tapasztalat megszerzésével javul.} 
+\end{displayquote}
+A gépi tanulás olyan problémák megoldásában lehet rendkívül hasznos, amik túl komplexek, vagy nem ismert algoritmikus megoldásuk. Ha megnézzük, hogy a gép milyen mintázatokat ismert fel vagy kapcsolatokat tanult meg, akkor az ember is új, addig még fel nem fedezett korrelációkat vehet észre, ami által a megértésünk javulhat, ezt nevezzük adatbányászatnak (\textit{data mining}). A példák, tapasztalatok, amik segítségével a gép tanul, a tanító adathalmaz (\textit{training set}) részét képezik ezek a minták (\textit{sample}) \cite{geron_hands-machine_2017}. 
+
+A gépi tanulásos rendszereket csoportosíthatjuk aszerint, hogy humán felügyelet alatt van-e tanítva (felügyelt -- \textit{supervised}, felügyelet nélküli -- \textit{unsupervised}, félig felügyelt -- \textit{semisupervised}, megerősítéses -- \textit{reinforcement} tanulás); menet közben tud-e fokozatosan tanulni (\textit{online} és \textit{batch} tanulás); illetve hogy az új adatokat a már ismertekhez hasonlítja (példa alapú -- \textit{instance-based} tanulás) vagy a tanító adathalmazban mintázatokat ismer fel, és ez alapján előrejelzést tud adni (modell alapú -- \textit{model-based} tanulás). A legfontosabb fogalmak a fentiek közül a felügyelt, felügyelet nélküli, illetve megerősítéses tanulás \cite{geron_hands-machine_2017}. 
+
+A felügyelt tanulás során a tanító adathalmaz tartalmazza a kívánt kimenetet / helyes megoldást (ezt nevezzük címkének -- \textit{label}). Példa lehet erre, hogy szeretnénk betanítani egy modellt, hogy korábbi eladási adatokat ismerve jelezze előre, mennyit ér egy eladásra szánt autó. Az autónak a tulajdonságai (\textit{feature}; mint a kora, megtett km, márka stb.) adottak. Az előrejelezni kívánt numerikus mennyiséget hívjuk \textit{predictor}-nek vagy \textit{target}-nek (jelen esetben ez az autó ára). Az előrejelzéshez használt algoritmus többféle lehet, legismertebb példái a lineáris regresszió és a neurális hálózat architektúrák. Felügyelet nélküli tanulás során a tanító adathalmaz nincsen felcímkézve, a modell maga tanulja meg a jellemzőket elkülöníteni. Legismertebb példa a klaszterezés (\textit{clustering}), amikor a modell a vizsgált adatokat a megfigyelt tulajdonságaik alapján osztályozza. Megerősítéses tanulás esetén a tanuló rendszert (az ágens -- \textit{agent}) megfigyeli a környezetét és a kialakított irányelvének (\textit{policy}) megfelelően tetteket hajt végre. A tetteiért jutalmat (\textit{reward}) vagy büntetést (\textit{penalty}) kap. Az ágens célja a jutalom maximalizálása, ami érdekében iteratívan frissíti az irányelvét \cite{geron_hands-machine_2017}. 
+
+A gépi tanulás alapú modellek problémái legtöbbször a tanító adatból származnak: gondot jelent a nem megfelelő mennyiségű, minőségű, nem elég reprezentatív, vagy irreleváns adat. Ha az adat túl zajos, felléphet a túlillesztés (\textit{overfitting}), ami azt jelenti, hogy a modell túl komplex a feladathoz. Ha a modell túl egyszerű, azt alulillesztésnek (\textit{underfitting}) nevezzük. Az elkészült gépi tanulás alapú modelleket ezen hibák kiszűrése érdekében validálják, melynek népszerű eszköze az igazságmátrix (\textit{confusion matrix}) \cite{geron_hands-machine_2017}.
+
+A gépi tanulás hagyományosan statisztikai módszerek segítségével történik a megfigyelt adatok alapján. A gépi tanulás múlt században megalkotott, és az utóbbi évtizedekben elterjedt technikája egészen más megközelítést kínál; ezek a mesterséges neurális hálózatok (\textit{Artificial Neural Network, ANN}). Az ANN-ek segítségével az adatbázisban fennálló komplex kapcsolatok is felismerhetőek \cite{sharifani_machine_2023}. Az ANN-eket 1943-ban mutatta be Warren McCulloch amerikai neurofiziológus és Walter Pitts számítógépes idegtudós. Az ANN-t mesterséges neuronok alkotják, melyek működését a biológiai neuronok ihlették, melyet az \ref{fig:bio_neur}. ábra mutat be.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./figures/bio_neur.png}
+    \caption{A biológiai neuron szerkezete. Az ábra Géron \textit{Hands-On Machine Learning with Scikit-Learn and TensorFlow} (2017) \cite{geron_hands-machine_2017} könyvéből származik.}
+    \label{fig:bio_neur}
+\end{figure}
+
+A biológiai neuron (idegsejt) az agykéregben előforduló sejt, melynek főbb részei a sejttest (\textit{cell body}), a dendritek (\textit{dendrite}), illetve a nagyon hosszú nyúlványa, az axon. Az axon telodendronokra bomlik, melyek csúcsán kis szinapszisok találhatóak, melyek a dendritekbe tudnak kapcsolódni és a neuronok kis elektromos impulzusokkal történő kommunikációjáért felelősek. Ha a neuron adott idő alatt elég jelet kap, maga is aktiválódik és jeleket ad le. A biológiai neuronok közti kapcsolódási pont a szinapszis, ami erősödik, ha a két neuron gyakran aktiválódik együtt \cite{choi_introduction_2020}. Az agyban a neuronok egymás utáni rétegekbe vannak rendeződve, így lesz képes az emberi agy komplex feladatok elvégzésére is \cite{geron_hands-machine_2017}.
+
+Az ANN rétegebe rendeződött neuronokból áll. A rétegekben csomópontok vannak, az információ feldolgozásáért felelős mesterséges neuronok pedig kapcsolatokon keresztül kommunikálnak egymással \cite{sharkawy_principle_2020}. A csomópontok a biológiai neuron sejttestének feleltethetőek meg, a kapcsolatok pedig hasonlóan működnek, mint az axonok és dendritek. A mesterséges neuronok közti kapcsolat erősségét a súlyok (\textit{weight}) határozzák meg \cite{choi_introduction_2020}.
+
+A McCulloch és Pitts által megalkotott ANN kijelentéslogikán alapult. A neuronok egy vagy több bináris (\textit{on/off} típusú) bemenetet (\textit{input}) fogadtak, és egyetlen kimenetet (\textit{output}) adtak. A biológiai neuronok aktiválódását úgy imitálták, hogy a mesterséges neuron csak akkor adott kimenetet, ha a kapott bemenetek száma elért egy bizonyos értéket.
+
+A gépi tanulás tehát a bemeneti és kimeneti adatok kapcsolatát leíró függvény megkeresését jelenti; ezen függvény megkeresését tanításnak (\textit{training}) nevezzük. A függvény ismeretében a következtetési folyamat (\textit{inference}) során új értékek jelezhetőek előre. A tanításhoz felhasznált adatok általában múltbeli megfigyelésekből állnak. A megfigyelések tartalmazzák a vizsgált dolog jellemzőit (\textit{feature}; $x$-el szoktuk jelölni), illetve a már ismert értékét, a címkét (\textit{label}; $y$-al szoktuk jelölni). \cite{microsoft_introduction_2026}. Mivel gyakran a jellemzők, illetve a címkék is vektorok, a gépi tanulás során megtanult függvény (modell) egy véges dimenziós vektorterek közötti leképezés. Az ilyen módon kapott modell kimenetét $\hat{y}$-al szokás jelölni.
+
+
 
 A mesterséges neuron sematikus felépítését a \ref{fig:an_hun}. ábra mutatja. Az $x_i$ bemeneti értékekre (\textit{input}) a neuron $w_i$ súlyokat alkalmaz, melyek azt határozzák meg, hogy mennyire fontos az adott bemenet a kimenet (\textit{output}) szempontjából. A súlyozást követő lépés az összegzés, melyet egy összegző csomópont (\textit{summing junction}) végez. A súlyozott bemenetek mellett egy $b$ konstans értéket felvevő elfogultság (\textit{bias}) is hozzáadásra kerül. Az így kapott $s_j$ összegre ezután egy nemlineáris aktivációs függvény (\textit{activation function;} $\varphi$-vel jelöljük) hat, amelynek eredményeként kapjuk az $y_j$ neuron által visszaadott $\hat{y_j}$ kimeneti értéket:
 \[
@@ -88,11 +93,14 @@ FNO és vision transformer architektúrák (\textit{ViT}) együttes használatá
 
 A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
 
-%\subsection{Káoszelméleti bevezetés}
 
-%A légkör egy kaotikus fizikai rendszer, ami azt jelenti, hogy a kis kezdeti hiba idővel exponenciálisan növekszik, azaz a kezdőfeltételekre rendkívül érzékeny. A kezdeti állapotot azonban nem ismerjük egészen pontosan, mivel nem léteznek tökéletes mérések.
+% nem tom, nem annyira állt még össze a kép; ezen dolgoznom kell még kicsit:( nem is tudom, egyáltalán mennyit kellene írni, ha nem is ez a dolgozat fő fókusza... lehet inkább a káoszelméletre kéne több szót fecsérelni, csakhogy ahhoz sem értek igazán :DD
 
-%A káosz kizárólag időben rendezetlen viselkedést jelent \cite{tel_turbulencia_2011}. 
+\subsection{Káoszelméleti bevezetés}
+A káosz ősi görög eredetű szó, ami eredetileg a szisztematikus elrendezés teljes hiányát jelentette. Ma valamilyen rend hiányának kifejezésére használják, aminek jelen kellene lennie. 
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
