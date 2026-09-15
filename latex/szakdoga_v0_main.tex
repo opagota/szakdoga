@@ -55,49 +55,52 @@ A biológiai neuron (idegsejt) az agykéregben előforduló sejt, melynek főbb 
 
 Az ANN rétegebe rendeződött neuronokból áll. A rétegekben csomópontok vannak, az információ feldolgozásáért felelős mesterséges neuronok pedig kapcsolatokon keresztül kommunikálnak egymással \cite{sharkawy_principle_2020}. A csomópontok a biológiai neuron sejttestének feleltethetőek meg, a kapcsolatok pedig hasonlóan működnek, mint az axonok és dendritek. A mesterséges neuronok közti kapcsolat erősségét a súlyok (\textit{weight}) határozzák meg \cite{choi_introduction_2020}.
 
-A McCulloch és Pitts által megalkotott ANN kijelentéslogikán alapult. A neuronok egy vagy több bináris (\textit{on/off} típusú) bemenetet (\textit{input}) fogadtak, és egyetlen kimenetet (\textit{output}) adtak. A biológiai neuronok aktiválódását úgy imitálták, hogy a mesterséges neuron csak akkor adott kimenetet, ha a kapott bemenetek száma elért egy bizonyos értéket.
+A McCulloch és Pitts által megalkotott ANN kijelentéslogikán alapult. A neuronok egy vagy több bináris (\textit{on/off} típusú) bemenetet (\textit{input}) fogadtak, és egyetlen kimenetet (\textit{output}) adtak. A biológiai neuronok aktiválódását úgy imitálták, hogy a mesterséges neuron csak akkor adott kimenetet, ha a kapott bemenetek száma elért egy bizonyos értéket. 
 
-A gépi tanulás tehát a bemeneti és kimeneti adatok kapcsolatát leíró függvény megkeresését jelenti; ezen függvény megkeresését tanításnak (\textit{training}) nevezzük. A függvény ismeretében a következtetési folyamat (\textit{inference}) során új értékek jelezhetőek előre. A tanításhoz felhasznált adatok általában múltbeli megfigyelésekből állnak. A megfigyelések tartalmazzák a vizsgált dolog jellemzőit (\textit{feature}; $x$-el szoktuk jelölni), illetve a már ismert értékét, a címkét (\textit{label}; $y$-al szoktuk jelölni). \cite{microsoft_introduction_2026}. Mivel gyakran a jellemzők, illetve a címkék is vektorok, a gépi tanulás során megtanult függvény (modell) egy véges dimenziós vektorterek közötti leképezés. Az ilyen módon kapott modell kimenetét $\hat{y}$-al szokás jelölni.
-
-
-
-A mesterséges neuron sematikus felépítését a \ref{fig:an_hun}. ábra mutatja. Az $x_i$ bemeneti értékekre (\textit{input}) a neuron $w_i$ súlyokat alkalmaz, melyek azt határozzák meg, hogy mennyire fontos az adott bemenet a kimenet (\textit{output}) szempontjából. A súlyozást követő lépés az összegzés, melyet egy összegző csomópont (\textit{summing junction}) végez. A súlyozott bemenetek mellett egy $b$ konstans értéket felvevő elfogultság (\textit{bias}) is hozzáadásra kerül. Az így kapott $s_j$ összegre ezután egy nemlineáris aktivációs függvény (\textit{activation function;} $\varphi$-vel jelöljük) hat, amelynek eredményeként kapjuk az $y_j$ neuron által visszaadott $\hat{y_j}$ kimeneti értéket:
+Az egyik legegyszerűbb neurális hálózat a Perceptron, melyet 1957-ben Frank Rosenblatt mutatott be. Úgynevezett küszöb logikai egységek (\textit{Treshold Logic Unit, TLU}) a mesterséges neuronok, az input és output értékek pedig numerikusak; minden input -- fontosságának megfelelően -- súlyozva van. A súlyozott bemenetek mellett egy $b$ konstans értéket felvevő elfogultság (\textit{bias}) is hozzáadásra szokott kerülni. A TLU egy súlyozott összeget számol, majd egy nemlineáris aktivációs függvényt hattat az eredményre, és ezt adja outputnak. Az aktivációs függvényre azért van szükség, hogy a lineárisnál bonyolultabb kapcsolatokat is képes legyen megtanulni az ANN. Aktivációs függvény lehet pl. a Heaviside-féle egységfüggvény, ReLu (\textit{REctified Linear Unit}, ami a negatív értékeket lenullázza), de gyakran valamilyen szigmoid függvényt alkalmaznak a célra, mint a tangens hiperbolikusz vagy a logisztikus függvény. A mesterséges neuron működését az alábbi egyenlet foglalja össze:
 \[
-s_j=\sum_{i=1}^m w_{ij}\cdot x_i + b_j; \quad \hat{y_j}=\varphi(s_j).
+s_j=\sum_{i=1}^m w_{ij}\cdot x_i + b_j; \quad \hat{y_j}=\varphi(s_j),
 \] 
-Az aktivációs függvény lehet pl. küszöb függvény (negatív értékekre 0-t, pozitív értékekre 1-et ad), ReLU (\textit{REctified Linear Unit}) aktivációs függvény (a negatív értékeket lenullázza), de gyakran valamilyen szigmoid függvényt választanak erre a célra (példa erre a tangens hiperbolikusz függvény: $\varphi(s)=\text{tanh}(s)$) \cite{sharkawy_principle_2020}.
+ahol $x_i$ az input, $b_j$ a bias, $w_{ij}$ a súlymátrix, $s_j$ a súlyozott összeg, $\varphi$ az aktivációs függvény, $\hat{y_j}$ pedig az output. A fentebb leírt mesterséges neuron működését mutatja be a \ref{fig:perceptron}. ábra. \cite{sharkawy_principle_2020,geron_hands-machine_2017,kelleher_deep_2019}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{./figures/Nonlinear-model-of-a-neutron-hun.png}
+    \includegraphics[width=0.5\linewidth]{./figures/Nonlinear-model-of-a-neuron.png}
     \caption{A mesterséges neuron sematikus felépítése. Az ábra Sharkawy (2020) \cite{sharkawy_principle_2020} cikkéből származik (CC BY-NC 4.0).}
-    \label{fig:an_hun}
+    \label{fig:perceptron}
 \end{figure}
 
-A neurális hálózatok neuronrétegekből állnak. A neurális hálózat szerkezetét általánosan architektúrának nevezzük. Egyrétegű neurális hálózat esetén a bemenet és kimenet közt egyszeres összeköttetés van, azonban a gyakorlatban általában több neuronrétegből alkotják meg a neurális hálózatot. A több réteg (melyeket rejtett rétegeknek nevezünk -- \textit{hidden layers}) a bemeneti és kimeneti adatok közt több kapcsolatot jelent, és képes komplexebb összefüggések megtanulására is. A neuronok közti adattovábbítás iránya szerint megkülönböztetünk előrecsatolt neurális hálózatokat (\textit{Feedforward Neural Network, FNN}), illetve rekurrens neurális hálózatokat (\textit{Recurrent Neural Network, RNN}). Az FNN-ekben nincsenek visszacsatolt kapcsolatok (\textit{feedback}), ahol a modellkimenetek önmagukba visszakapcsolódhatnának. Ha a rejtett rétegek közt rekurrens kapcsolatokat is megengedünk, RNN-ről beszélünk. A rekurrens kapcsolatok egyfajta memóriát adnak a neurális hálózatnak, ezzel pedig lehetővé teszik pl. kontextus értelmezését \cite{Goodfellow2016}.
+Egyszeres neuronréteg azonban csak egyszerűbb feladatok elvégzésére alkalmazható; ha bonyolultabb problémákat szeretnénk megoldani, több rétegre van szükség. A kettőnél több rétegből álló ANN-t mély neurális hálózatnak (\textit{Deep Neural Network, DNN}) nevezzük. Ennek legegyszerűbb példája a többrétegű Perceptron (\textit{Multilayer Perceptron, MLP}), ami több rétegnyi TLU-ból áll, melyeket rejtett rétegeknek (\textit{hidden layers}) nevezünk. Minden réteg teljesen hozzá van kapcsolva a szomszédos réteghez (\textit{Fully Connected, FL}) \cite{geron_hands-machine_2017}.
 
-Az utóbbi években mind jobban elterjedő modellek transzformer architektúrán alapszanak, így működik pl. a ChatGPT is. A transzformer modelleket először a Google kutatói által 2017-ben publikált ,,Attention Is All You Need" című cikk említette, amely azóta a mesterséges intelligencia-kutatás egyik alapművévé vált; több tízezernyi cikk hivatkozik rá \cite{vaswani_attention_2017, amatriain_transformer_2024}. A transzformer modellek egyfajta encoder-decoder modellek. %Andris szakdogájában ezt a részt elolvasni!!
-
-inputja egy sorozatnyi token (a token a szekvenciális adat felépítő részét jelenti, például egy mondatban a szavakat, vagy egy szóban a szótagokat/betűket). A transzformer ezután reprezentációt készít minden tokenről
-
-Az időjárás előrejelzésére sokféle architektúrát alkalmaznak, a következő fejezetben ezek közül szeretnék néhányat bemutatni.
-
-\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
-
-Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban [\textit{cite Hung et al.}]), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével. Az MLWP-modellek több évtizednyi időjárási adat feldolgozása során fedezik fel a kapcsolatokat a légköri változók között, a kapcsolat ismeretében pedig már képesek előrejelzést készíteni. A kapcsolat azonban nincs szabályozva a fizikai törvények által, ami az MLWP-modellek ,,fekete doboz" jellegét okozza \cite{de_burgh-day_machine_2023}.
-
-Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. A hálózatot úgynevezett adaptív Fourier neurális operátorok (\textit{Adaptive Fourier Neural Operator, AFNO}) alkotják. A neurális operátorok olyan gépi tanuláshoz használt architektúrák, melyek végtelen dimenziós függvényterek közti leképezést hajtanak végre \cite{kovachki_neural_2024}. Ha ezeket az operátorokat a függvényterek Fourier-terén hattatjuk, Fourier neurális operátorokról (\textit{Fourier Neural Operator, FNO}) beszélünk \cite{li_fourier_2021}. Az AFNO olyan token mixer
-
-FNO és vision transformer architektúrák (\textit{ViT}) együttes használatával épül fel.
+A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Learning, DL}) technológiák alkalmasak. Mélytanulásos architektúra többek között a konvolúciós neurális hálózat (\textit{Convolutional Neural Network, CNN}), rekurrens neurális hálózat (\textit{Recurrent Neural Network, RNN}), a transzformer architektúra (\textit{Transformer}), vagy a gráfalapú neurális hálózat (\textit{Graph Neural Network, GNN}).
 
 
-A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
+
+%A gépi tanulás tehát a bemeneti és kimeneti adatok kapcsolatát leíró függvény megkeresését jelenti; ezen függvény megkeresését tanításnak (\textit{training}) nevezzük. A függvény ismeretében a következtetési folyamat (\textit{inference}) során új értékek jelezhetőek előre. A tanításhoz felhasznált adatok általában múltbeli megfigyelésekből állnak. A megfigyelések tartalmazzák a vizsgált dolog jellemzőit (\textit{feature}; $x$-el szoktuk jelölni), illetve a már ismert értékét, a címkét (\textit{label}; $y$-al szoktuk jelölni). \cite{microsoft_introduction_2026}. Mivel gyakran a jellemzők, illetve a címkék is vektorok, a gépi tanulás során megtanult függvény (modell) egy véges dimenziós vektorterek közötti leképezés. Az ilyen módon kapott modell kimenetét $\hat{y}$-al szokás jelölni.
 
 
-% nem tom, nem annyira állt még össze a kép; ezen dolgoznom kell még kicsit:( nem is tudom, egyáltalán mennyit kellene írni, ha nem is ez a dolgozat fő fókusza... lehet inkább a káoszelméletre kéne több szót fecsérelni, csakhogy ahhoz sem értek igazán :DD
+%A neurális hálózatok neuronrétegekből állnak. A neurális hálózat szerkezetét általánosan architektúrának nevezzük. Egyrétegű neurális hálózat esetén a bemenet és kimenet közt egyszeres összeköttetés van, azonban a gyakorlatban általában több neuronrétegből alkotják meg a neurális hálózatot. A több réteg (melyeket rejtett rétegeknek nevezünk -- \textit{hidden layers}) a bemeneti és kimeneti adatok közt több kapcsolatot jelent, és képes komplexebb összefüggések megtanulására is. A neuronok közti adattovábbítás iránya szerint megkülönböztetünk előrecsatolt neurális hálózatokat (\textit{Feedforward Neural Network, FNN}), illetve rekurrens neurális hálózatokat (\textit{Recurrent Neural Network, RNN}). Az FNN-ekben nincsenek visszacsatolt kapcsolatok (\textit{feedback}), ahol a modellkimenetek önmagukba visszakapcsolódhatnának. Ha a rejtett rétegek közt rekurrens kapcsolatokat is megengedünk, RNN-ről beszélünk. A rekurrens kapcsolatok egyfajta memóriát adnak a neurális hálózatnak, ezzel pedig lehetővé teszik pl. kontextus értelmezését \cite{Goodfellow2016}.
 
-\subsection{Káoszelméleti bevezetés}
-A káosz ősi görög eredetű szó, ami eredetileg a szisztematikus elrendezés teljes hiányát jelentette. Ma valamilyen rend hiányának kifejezésére használják, aminek jelen kellene lennie. 
+%Az utóbbi években mind jobban elterjedő modellek transzformer architektúrán alapszanak, így működik pl. a ChatGPT is. A transzformer modelleket először a Google kutatói által 2017-ben publikált ,,Attention Is All You Need" című cikk említette, amely azóta a mesterséges intelligencia-kutatás egyik alapművévé vált; több tízezernyi cikk hivatkozik rá \cite{vaswani_attention_2017, amatriain_transformer_2024}. A transzformer modellek egyfajta encoder-decoder modellek. %Andris szakdogájában ezt a részt elolvasni!!
+
+%inputja egy sorozatnyi token (a token a szekvenciális adat felépítő részét jelenti, például egy mondatban a szavakat, vagy egy szóban a szótagokat/betűket). A transzformer ezután reprezentációt készít minden tokenről
+
+%Az időjárás előrejelzésére sokféle architektúrát alkalmaznak, a következő fejezetben ezek közül szeretnék néhányat bemutatni.
+
+%\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
+
+%Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban [\textit{cite Hung et al.}]), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével. Az MLWP-modellek több évtizednyi időjárási adat feldolgozása során fedezik fel a kapcsolatokat a légköri változók között, a kapcsolat ismeretében pedig már képesek előrejelzést készíteni. A kapcsolat azonban nincs szabályozva a fizikai törvények által, ami az MLWP-modellek ,,fekete doboz" jellegét okozza \cite{de_burgh-day_machine_2023}.
+
+%Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. A hálózatot úgynevezett adaptív Fourier neurális operátorok (\textit{Adaptive Fourier Neural Operator, AFNO}) alkotják. A neurális operátorok olyan gépi tanuláshoz használt architektúrák, melyek végtelen dimenziós függvényterek közti leképezést hajtanak végre \cite{kovachki_neural_2024}. Ha ezeket az operátorokat a függvényterek Fourier-terén hattatjuk, Fourier neurális operátorokról (\textit{Fourier Neural Operator, FNO}) beszélünk \cite{li_fourier_2021}. Az AFNO olyan token mixer
+
+%FNO és vision transformer architektúrák (\textit{ViT}) együttes használatával épül fel.
+
+
+%A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
+
+
+%\subsection{Káoszelméleti bevezetés}
+%A káosz ősi görög eredetű szó, ami eredetileg a szisztematikus elrendezés teljes hiányát jelentette. Ma valamilyen rend hiányának kifejezésére használják, aminek jelen kellene lennie. 
 
 
 
