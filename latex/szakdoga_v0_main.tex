@@ -72,35 +72,87 @@ ahol $x_i$ az input, $b_j$ a bias, $w_{ij}$ a súlymátrix, $s_j$ a súlyozott �
 
 Egyszeres neuronréteg azonban csak egyszerűbb feladatok elvégzésére alkalmazható; ha bonyolultabb problémákat szeretnénk megoldani, több rétegre van szükség. A kettőnél több rétegből álló ANN-t mély neurális hálózatnak (\textit{Deep Neural Network, DNN}) nevezzük. Ennek legegyszerűbb példája a többrétegű Perceptron (\textit{Multilayer Perceptron, MLP}), ami több rétegnyi TLU-ból áll, melyeket rejtett rétegeknek (\textit{hidden layers}) nevezünk. Minden réteg teljesen hozzá van kapcsolva a szomszédos réteghez (\textit{Fully Connected, FL}) \cite{geron_hands-machine_2017}.
 
-A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Learning, DL}) technológiák alkalmasak. Mélytanulásos architektúra többek között a konvolúciós neurális hálózat (\textit{Convolutional Neural Network, CNN}), rekurrens neurális hálózat (\textit{Recurrent Neural Network, RNN}), a transzformer architektúra (\textit{Transformer}), vagy a gráfalapú neurális hálózat (\textit{Graph Neural Network, GNN}).
+A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Learning, DL}) technológiák alkalmasak. Mélytanulásos architektúra többek között a konvolúciós neurális hálózat (\textit{Convolutional Neural Network, CNN}), rekurrens neurális hálózat (\textit{Recurrent Neural Network, RNN}), a gráfalapú neurális hálózat (\textit{Graph Neural Network, GNN}), a transzformer architektúra (\textit{Transformer}), vagy a Vision Transformer \cite{shi_deep_2025}. Az időjárás-előrejelzésben használt MLWP-modellek áttekintését mutatja a \ref{fig:MLWP-review}. ábra.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/review.jpg}
+    \caption{Az MLWP-modellek áttekintése. Az ábra Shi et al. (2025) \cite{shi_deep_2025} cikkéből származik.}
+    \label{fig:MLWP-review}
+\end{figure}
+
+Ahogy az ábrán is látható, az MLWP-modelleknek alapvetően három fajtája van. Legelterjedtebbek az általános célú nagy modellek (\textit{General-Purpose Large Models}), melyek többféle időjárási paraméter globális előrejelzésére alkalmasak. Az operatív időjárás-előrejelzésben kevésbé elterjedtebbek a domén specifikus modellek (\textit{Domain-Specific Models}, melyekkel regionális előrejelzést lehet készíteni egyetlen változóra), illetve az alapmodellek (\textit{Foundation Models}, melyekkel még további finomhangolás, specifikus feladathoz adaptálás lehetséges). Az is megfigyelhető, hogy az utóbbi években a CNN és RNN alapú időjárás-előrejelző modellek háttérbe szorultak a GNN és transzformer architektúrájú modellek mellett. 
+
+A CNN architektúrát LeCun et al. mutatta be 1995-ben \cite{lecun_convolutional_1995}. Az architektúra sturkturált rácsadatok, mint pl. a képek feldolgozására alkalmas; klasszikusan a gépi látás területén (pl. képosztályozás) CNN modelleket használnak \cite{shi_deep_2025}. A CNN-nek négy rétege van (konvolúciós réteg -- \textit{convolutional layer}, gyűjtőréteg -- \textit{pooling layer}, teljesen összekötött réteg -- \textit{fully connected layer} és a nemlineáris réteg -- \textit{nonlinearity layer}), melyeket a \ref{fig:cnn}. ábra szemléltet. A rétegek szerepét egy képosztályozási feladaton keresztül mutatom be.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/cnn.png}
+    \caption{A CNN szerkezete. Az ábra Purwono et al. (2022) \cite{purwono_understanding_2022} cikkéből származik.}
+    \label{fig:cnn}
+\end{figure}
+
+A CNN az inputként kapott képet egy mátrixként látja, ahol a mátrix minden eleme az adott pixel fényintenzitását reprezentálja. A konvolúciós réteg (\textit{convolutional layer}) a képekből a jellemzőket (\textit{feature}, pl. élek, textúrák, minták) nyeri ki. A gyűjtőréteg (\textit{pooling layer}) konvolúciós rétegeket kapcsol össze; szerepe a paraméter- és ezáltal számítási teher csökkentése a konvolúciós réteg kimeneteinek alulmintavételezett reprezentáció készítésével. A teljesen összekapcsolt réteg (\textit{fully connected layer}, más néven konvolúciós output réteg -- \textit{convolutional output layer}) bemenete az utolsó pooling réteg. Az adatot a következő rétegbe továbbítás előtt vektorrá lapítja. Az utolsó réteg a nemlineáris réteg vagy aktivációs függvény (\textit{nonlinearity layer / activation function}); ez a réteg adja meg a neurális hálózat végső kimenetét, a válaszát az adott feladatra \cite{purwono_understanding_2022}.
+
+Az RNN-eket 2001-ben mutatta be Medsker \& Jain \cite{medsker_recurrent_2001}, mint időfüggő vagy szekvenciális adatokkal kapcsolatos feladatok (pl. idősor-előrejelzés) végzésére alkalmas architektúrákat. A modell rekurrens módon tanul a kapott adatsorozatból egy belső rejtett állapot segítségével, ami tartalmazza a korábbi rejtett állapotokat és az aktuális bemenetet. A tanulás folyamatát az alábbi egyenletek írják le:
+\[
+h_t=\sigma(\mathbf{W}_xx_t+\mathbf{W}_hh_{t-1}+b_h); \quad y_t=\sigma(\mathbf{W}_yh_t+b_y),
+\]
+ahol a $t$-edik időpillanatban $h_t$ a rejtett állapot, $x_t$ az input, $y_t$ az output; $\mathbf{W}_x, \mathbf{W}_h, \mathbf{W}_y$ súlymátrixok, $b_h, b_y$ bias-ok, $\sigma$ pedig az aktivációs függvény. A CNN-nél és RNN-nél sokkal fontosabb architektúrák azonban az időjárás-előrejelzésben a GNN-ek és a transzformer alapú neurális hálózatok \cite{shi_deep_2025}.
+
+A GNN-t 2008-ban mutatták be Scarselli et al. \cite{scarselli_graph_2008}. Az architektúra $\mathcal{G}=(\mathcal{V, E})$ $\mathcal{V}$ csúccsal és $\mathcal{E}$ éllel rendelkező gráf szerkezetű adatok feldolgozására alkalmas, ahol a csúcsok a vizsgált dolgokat, az élek pedig a köztük fennálló kapcsolatokat reprezentálják. Ha a GNN a tér- és időbeli függőségeket is jól modellezik, tér-idő GNN-ekről (\textit{Spatio-temporal GNN, ST-GNN}) beszélünk, melyeket a $\mathcal{G}_t=\mathcal{(V,E},t)$ jelöléssel szoktak illetni. Itt a csúcsok és az élek térbeli kapcsolatokat írnak le; a vizsgált dolog $i$ térbeli helyen és $t$ időpillanatban felvett vektorát a $v_t^i$ vektor reprezentálja. A térbeli függőségek figyelembevétele az egyes csomópontok szomszédaikkal való kommunikációján (\textit{message passing}) keresztül valósul meg. Az időbeli kapcsolatokat szekvenciális modellekkel (mint az RNN) lehet figyelembe venni. A csomópontok $h_t^i$ rejtett állapotai a $v^i_{t+1}$ üzenetvektorokkal kerülnek frissítésre az alábbi módon:
+\[
+v_{t+1}^i = \sum_{j \in N(i)} M_t(h_t^i, h_t^j, e_{ij}); \quad h_{t+1}^i = \sigma(h_t^i, v_{t+1}^i),
+\]
+ahol $N(i)$ az $i$-edik csomópont szomszédjai, $M_t$ az üzenetküldő függvény, $e_{ij}$ pedig az $i$-edik és $j$-edik csomópont közti élet jellemzi \cite{shi_deep_2025}.
+
+Az utóbbi évek legnépszerűbb mesterséges intelligencia-alapú modelljeinek alapjai a transzformer architektúrák. 2017-ben jelent meg Vaswani et al. a transzformer neurális hálózatokat bemutató azóta már nagyon híressé vált cikke, az ,,Attention Is All You Need" \cite{vaswani_attention_2017}. Az architektúra a figyelem mechanizmus (\textit{attention mechanism}) alapján működik; szekvenciális lépések közbeiktatása nélkül képes az adatban fennálló kapcsolatokat megragadni. A figyelem mechanizmus az alábbiak szerint írható le:
+\[
+\text{Attention}(\mathbf{Q, K, V})=\text{softmax}\left(\frac{\mathbf{QK}^T}{\sqrt{d_k}} \right)\textbf{V},
+\]
+ahol $d_k$ a \textbf{K} kulcsmátrix (\textit{key matrix}) dimenziója, $\mathbf{Q}\in\mathbb{R}^{n \times d_k}$ a lekérdezési mátrix (\textit{query matrix}), $\mathbf{K}\in\mathbb{R}^{m \times d_k}$ a kulcsmátrix, $\mathbf{V}\in\mathbb{R}^{m \times d_v}$ az értékmátrix (\textit{value matrix}). Ezeket a mátrixokat az $\mathbf{X}\in \mathbb{R}^{n \times d}$ bemeneti szekvenciális adatokat tartalmazó mátrix alapján az alábbiak szerint számolják ki:
+\[
+\mathbf{Q=XW_q, \quad K=XW_k, \quad V=XW_v},
+\]
+ahol $\mathbf{W_q} \in \mathbb{R}^{d \times d_k}, \mathbf{W_k} \in \mathbb{R}^{d \times d_k}, \mathbf{W_v} \in \mathbb{R}^{d \times d_v}$ rendre a \textbf{Q, K, V} mátrixokhoz tartozó tanulható súlymátrixok \cite{shi_deep_2025}.
+
+A Vision Transformer-t (\textit{ViT}) Dosovitskiy et al. mutatta be 2021-ben \cite{dosovitskiy_image_2021}. Ez egy olyan transzformer, amely képek feldolgozására lett kifejlesztve. A ViT a bemenetként kapott képet rácsos szerkezetben részekre (\textit{patch}) osztja; ezeket az adat-darabokat (úgynevezett \textit{tokeneket}) alakítja aztán vektorrá és dolgozza fel. Az így előkészített tokeneket továbbítják aztán egy transzformerbe, ahol a figyelem mechanizmus már alkalmazható. A Vision Transformer szerkezetét mutatja a \ref{fig:vit}. ábra.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/vit.png}
+    \caption{A ViT szerkezete. Az ábra Dosovitskiy et al. (2021) \cite{dosovitskiy_image_2021} cikkéből származik.}
+    \label{fig:vit}
+\end{figure}
+
+\subsection{Kaotikus neurális hálózatok}
+
+A káosz görög eredetű szó, eredeti jelentése ,,tátongó űr". Máshogy megfogalmazva a káosz egy komplex rendszer viselkedésében megnyilvánuló teljes zűrzavar vagy kiszámíthatatlanság. A káoszt a kezdeti feltételekre való rendkívüli érzékenységgel szokás azonosítani, ami a hosszútávú idősor-előrejelzést lehetetleníti el. Ezt először Henri Poincaré francia matematikus figyelte meg a 19. században, majd 1963-ban Edward Lorenz angol matematikus és meteorológus fogalmazta meg a káoszelméletet; tőle származik a ,,pillangóhatás" kifejezés is. Lorenz egy modellt készített, ami a légköri mozgásokat hivatott reprezentálni. A számításai során látszólag elhanyagolható kerekítéseket végzett, azonban észrevette, hogy ez az előrejelzésben rendkívül nagy eltéréseket okozott. Ez a kezdeti feltételekre való érzékenység koncepciója. Az 1989-ben Benoît Mandlebrot fedezte fel a fraktálok jelentőségét a kaotikus attraktorok leírásában \cite{biswas_chaos_2018, anusree_understanding_2025}. 
+
+Ahhoz, hogy egy rendszer kaotikusnak nevezhessünk, az alábbi jellemzőknek kell teljesülnie:
+\begin{itemize}
+    \item Nem jelenik meg periodikusság.
+    \item Kezdeti feltételekre való érzékenység.
+    \item Kaotikus mozgást nehéz vagy lehetetlen előrejelezni.
+    \item Véletlenszerűnek látszó mozgás.
+    \item Nemlineáris.
+\end{itemize}
+
+A kaotikus neurális hálózatokat (\textit{Chaotic Neural Network, cNN}) -- a káoszelmélet és neurális hálózatok ötvözetét -- Aihara et al. mutatták be 1990-ben \cite{aihara_chaotic_1990}.  A cNN-ek a kaotikus rendszerek komplex mintázatait képesek reprezentálni és változatos megoldásokat tudnak felfedezni \cite{anusree_understanding_2025}. 
+
+Neurális hálózatokban káoszt pl. nemlineáris aktivációs függvényekkel (mint a tangens hiperbolikusz) lehet előidézni. Az ilyen hálózatok rendelkeznek kaotikus attraktorokkal. 
+
+\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
+
+Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban \cite{hung_artificial_2009}), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével \cite{de_burgh-day_machine_2023}. 
+
+Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. Az architektúra alapötlete a fentebb már ismertetett ViT. Azonban a ViT erőforrásigénye a pixelszámokkal négyzetesen nő, így sokdimenziós bemeneti adatoknál már nem érdemes használni. Ezen probléma áthidalására fejlesztették ki Guibas et al. 2022-ben az Adaptív Fourier Neurális Operátorokat (\textit{Adaptive Fourier Neural Operator, AFNO}). A módszer a függvények Fourier-terén hat, ami sok számítást leegyszerűsít (pl. a kovolúcióból szorzás lesz) \cite{guibas_adaptive_2022}.  
+
+% ide kéne még a papíromról a többi MLWP-nek a struktúrája is
 
 
-
-%A gépi tanulás tehát a bemeneti és kimeneti adatok kapcsolatát leíró függvény megkeresését jelenti; ezen függvény megkeresését tanításnak (\textit{training}) nevezzük. A függvény ismeretében a következtetési folyamat (\textit{inference}) során új értékek jelezhetőek előre. A tanításhoz felhasznált adatok általában múltbeli megfigyelésekből állnak. A megfigyelések tartalmazzák a vizsgált dolog jellemzőit (\textit{feature}; $x$-el szoktuk jelölni), illetve a már ismert értékét, a címkét (\textit{label}; $y$-al szoktuk jelölni). \cite{microsoft_introduction_2026}. Mivel gyakran a jellemzők, illetve a címkék is vektorok, a gépi tanulás során megtanult függvény (modell) egy véges dimenziós vektorterek közötti leképezés. Az ilyen módon kapott modell kimenetét $\hat{y}$-al szokás jelölni.
-
-
-%A neurális hálózatok neuronrétegekből állnak. A neurális hálózat szerkezetét általánosan architektúrának nevezzük. Egyrétegű neurális hálózat esetén a bemenet és kimenet közt egyszeres összeköttetés van, azonban a gyakorlatban általában több neuronrétegből alkotják meg a neurális hálózatot. A több réteg (melyeket rejtett rétegeknek nevezünk -- \textit{hidden layers}) a bemeneti és kimeneti adatok közt több kapcsolatot jelent, és képes komplexebb összefüggések megtanulására is. A neuronok közti adattovábbítás iránya szerint megkülönböztetünk előrecsatolt neurális hálózatokat (\textit{Feedforward Neural Network, FNN}), illetve rekurrens neurális hálózatokat (\textit{Recurrent Neural Network, RNN}). Az FNN-ekben nincsenek visszacsatolt kapcsolatok (\textit{feedback}), ahol a modellkimenetek önmagukba visszakapcsolódhatnának. Ha a rejtett rétegek közt rekurrens kapcsolatokat is megengedünk, RNN-ről beszélünk. A rekurrens kapcsolatok egyfajta memóriát adnak a neurális hálózatnak, ezzel pedig lehetővé teszik pl. kontextus értelmezését \cite{Goodfellow2016}.
-
-%Az utóbbi években mind jobban elterjedő modellek transzformer architektúrán alapszanak, így működik pl. a ChatGPT is. A transzformer modelleket először a Google kutatói által 2017-ben publikált ,,Attention Is All You Need" című cikk említette, amely azóta a mesterséges intelligencia-kutatás egyik alapművévé vált; több tízezernyi cikk hivatkozik rá \cite{vaswani_attention_2017, amatriain_transformer_2024}. A transzformer modellek egyfajta encoder-decoder modellek. %Andris szakdogájában ezt a részt elolvasni!!
-
-%inputja egy sorozatnyi token (a token a szekvenciális adat felépítő részét jelenti, például egy mondatban a szavakat, vagy egy szóban a szótagokat/betűket). A transzformer ezután reprezentációt készít minden tokenről
-
-%Az időjárás előrejelzésére sokféle architektúrát alkalmaznak, a következő fejezetben ezek közül szeretnék néhányat bemutatni.
-
-%\subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
-
-%Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban [\textit{cite Hung et al.}]), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével. Az MLWP-modellek több évtizednyi időjárási adat feldolgozása során fedezik fel a kapcsolatokat a légköri változók között, a kapcsolat ismeretében pedig már képesek előrejelzést készíteni. A kapcsolat azonban nincs szabályozva a fizikai törvények által, ami az MLWP-modellek ,,fekete doboz" jellegét okozza \cite{de_burgh-day_machine_2023}.
-
-%Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. A hálózatot úgynevezett adaptív Fourier neurális operátorok (\textit{Adaptive Fourier Neural Operator, AFNO}) alkotják. A neurális operátorok olyan gépi tanuláshoz használt architektúrák, melyek végtelen dimenziós függvényterek közti leképezést hajtanak végre \cite{kovachki_neural_2024}. Ha ezeket az operátorokat a függvényterek Fourier-terén hattatjuk, Fourier neurális operátorokról (\textit{Fourier Neural Operator, FNO}) beszélünk \cite{li_fourier_2021}. Az AFNO olyan token mixer
-
-%FNO és vision transformer architektúrák (\textit{ViT}) együttes használatával épül fel.
-
-
-%A Vision Transformer egy olyan architektúra, ami szekvenciális adatokban (pl. nyelvtani mondatok) képes komplex kapcsolatokat felfedezni.
-
-
-%\subsection{Káoszelméleti bevezetés}
-%A káosz ősi görög eredetű szó, ami eredetileg a szisztematikus elrendezés teljes hiányát jelentette. Ma valamilyen rend hiányának kifejezésére használják, aminek jelen kellene lennie. 
+\subsection{MLWP-modellek kaotikus tulajdonságai}
+Azt, hogy megállapítsuk, hogy egy modell tudja-e a kaotikus jegyeket produkálni, legegyszerűbben az előrejelzésben valamilyen kezdeti perturbáció növekedésének vizsgálatával tehetjük meg. Ha a hiba exponenciálisan nő (azaz találunk pozitív Ljapunov-exponenst), a káosz jelen van a predikcióban.
 
 
 
