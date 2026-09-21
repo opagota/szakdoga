@@ -65,8 +65,8 @@ ahol $x_i$ az input, $b_j$ a bias, $w_{ij}$ a súlymátrix, $s_j$ a súlyozott �
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{./figures/Nonlinear-model-of-a-neuron.png}
-    \caption{A mesterséges neuron sematikus felépítése. Az ábra Sharkawy (2020) \cite{sharkawy_principle_2020} cikkéből származik (CC BY-NC 4.0).}
+    \includegraphics[width=0.5\linewidth]{./figures/art_neur.png}
+    \caption{A mesterséges neuron sematikus felépítése. Az ábra Sharkawy (2020) \cite{sharkawy_principle_2020} cikkéből származik.}
     \label{fig:perceptron}
 \end{figure}
 
@@ -127,14 +127,14 @@ A Vision Transformer-t (\textit{ViT}) Dosovitskiy et al. mutatta be 2021-ben \ci
 
 \subsection{Kaotikus neurális hálózatok}
 
-A káosz görög eredetű szó, eredeti jelentése ,,tátongó űr". Máshogy megfogalmazva a káosz egy komplex rendszer viselkedésében megnyilvánuló teljes zűrzavar vagy kiszámíthatatlanság. A káoszt a kezdeti feltételekre való rendkívüli érzékenységgel szokás azonosítani, ami a hosszútávú idősor-előrejelzést lehetetleníti el. Ezt először Henri Poincaré francia matematikus figyelte meg a 19. században, majd 1963-ban Edward Lorenz angol matematikus és meteorológus fogalmazta meg a káoszelméletet; tőle származik a ,,pillangóhatás" kifejezés is. Lorenz egy modellt készített, ami a légköri mozgásokat hivatott reprezentálni. A számításai során látszólag elhanyagolható kerekítéseket végzett, azonban észrevette, hogy ez az előrejelzésben rendkívül nagy eltéréseket okozott. Ez a kezdeti feltételekre való érzékenység koncepciója. Az 1989-ben Benoît Mandlebrot fedezte fel a fraktálok (önhasonló objektumok; a ,,káosz mintázatai") jelentőségét a kaotikus attraktorok leírásában \cite{biswas_chaos_2018, anusree_understanding_2025}. 
+A káosz görög eredetű szó, eredeti jelentése ,,tátongó űr". Máshogy megfogalmazva a káosz egy komplex rendszer viselkedésében megnyilvánuló teljes zűrzavar vagy kiszámíthatatlanság. A káoszt a kezdeti feltételekre való rendkívüli érzékenységgel szokás azonosítani, ami a hosszútávú idősor-előrejelzést lehetetleníti el. Ezt először Henri Poincaré francia matematikus figyelte meg a 19. században, majd 1963-ban Edward Lorenz angol matematikus és meteorológus fogalmazta meg a káoszelméletet; tőle származik a ,,pillangóhatás" kifejezés is. Lorenz egy modellt készített, ami a légköri mozgásokat hivatott reprezentálni. A számításai során látszólag elhanyagolható kerekítéseket végzett, azonban észrevette, hogy ez az előrejelzésben rendkívül nagy eltéréseket okozott. Ez a kezdeti feltételekre való érzékenység koncepciója. Az 1989-ben Benoît Mandlebrot fedezte fel a fraktálok (önhasonló objektumok; a ,,káosz mintázatai") jelentőségét a kaotikus attraktorok leírásában. \cite{biswas_chaos_2018, anusree_understanding_2025}. 
 
 Ahhoz, hogy egy rendszer kaotikusnak nevezhessünk, az alábbi jellemzőknek kell teljesülnie:
 \begin{itemize}
     \item Nem jelenik meg periodikusság.
     \item Kezdeti feltételekre való érzékenység.
     \item Kaotikus mozgást nehéz vagy lehetetlen előrejelezni.
-    \item Véletlenszerűnek látszó mozgás.
+    \item Véletlenszerűnek látszó (de valójában determinisztikus) mozgás.
     \item Nemlineáris.
 \end{itemize}
 
@@ -147,22 +147,119 @@ A kaotikus neurális hálózatokat (\textit{Chaotic Neural Network, cNN}) -- a k
     \label{fig:chaotic_neuron}
 \end{figure}
 
-A bemutatott kaotikus neuron három rétegből áll. A bemeneti (\textit{input}) réteg fogadja a bejövő dinamikus jeleket. A réteg teljesen össze van kötve (\textit{fully connected}) a gátló (\textit{inhibitory}) réteggel.
+A bemutatott kaotikus neuron három rétegből áll. A bemeneti (\textit{input}) réteg fogadja a bejövő dinamikus jeleket. A réteg teljesen össze van kötve (\textit{fully connected}) egy gátló neuronokból álló klaszterek alkotta réteggel (\textit{inhibitory layer}). Egy-egy ilyen klasztert alkotó neuronok mindegyik a következő, kaotikus (\textit{chaotic}) réteg ugyanazon neuronjához kapcsolódik. A kaotikus réteget alkotó minden egység teljes összeköttetésben van a többi egységgel \cite{anusree_understanding_2025}. 
 
+A cNN-ek tehát le tudják képezni a kaotikus jellemzőket. Jelenleg azonban főként arra használják a technológiát, hogy a tanítás során a modell ne ragadjon bele lokális minimumokba  \cite{anusree_understanding_2025}. Az Echo State Network-öt (\textit{ESN}) -- egy olyan neurális hálózat, ami bizonyos körülmények között képes kaotikus tulajdonságokat produkálni -- Ortiz et al. (2025) \cite{ortiz_exploring_2025} már használták a meteorológia területén, felhőzet-előrejelzésre. Azonban a kaotikus neurális hálózatok gépi tanulás alapú időjárás-előrejelző modellekbe való integrálása még nem terjedt el széleskörűen, nem találkoztam ilyen jellegű tanulmányokkal a szakirodalmi kutatásom során.
 
 
 \subsection{Gépi tanulás alapú időjárás-előrejelző modellek}
 
 Az időjárás-előrejelzés területén a gépi tanulást már több, mint 25 éve használják (ld. pl. Hung et al., 2009, akik ANN-t használtak az eső előrejelzésére Bangkokban \cite{hung_artificial_2009}), azonban csak az utóbbi években ért el a technológia olyan fejlettséget, hogy operatív, több időjárási változóra is kiterjedő előrejelzést lehessen készíteni segítségével \cite{de_burgh-day_machine_2023}. 
 
-Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. Az architektúra alapötlete a fentebb már ismertetett ViT. Azonban a ViT erőforrásigénye a pixelszámokkal négyzetesen nő, így sokdimenziós bemeneti adatoknál már nem érdemes használni. Ezen probléma áthidalására fejlesztették ki Guibas et al. 2022-ben az Adaptív Fourier Neurális Operátorokat (\textit{Adaptive Fourier Neural Operator, AFNO}). A módszer a függvények Fourier-terén hat, ami sok számítást leegyszerűsít (pl. a kovolúcióból szorzás lesz) \cite{guibas_adaptive_2022}.  
+Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. Az architektúra alapötlete a fentebb már ismertetett ViT. Azonban a ViT erőforrásigénye a pixelszámokkal négyzetesen nő, így sokdimenziós bemeneti adatoknál már nem érdemes használni. Ezen probléma áthidalására fejlesztették ki Guibas et al. 2022-ben az Adaptív Fourier Neurális Operátorokat (\textit{Adaptive Fourier Neural Operator, AFNO}). A módszer a függvények Fourier-terén hat, ami sok számítást leegyszerűsít (pl. a konvolúcióból szorzás lesz). Az AFNO lényegében a ViT módszert váltja fel \cite{pathak_fourcastnet_2022, guibas_adaptive_2022}.
 
-% ide kéne még a papíromról a többi MLWP-nek a struktúrája is
+Szintén híres MLWP-modell a Huawei által 2023-ban bemutatott Pangu-Weather. A modell egy ún. 3D-s Föld-specifikus transzformer (\textit{3D Earth-Specific Transformer, 3DEST}), melynek szerkezetét a \ref{fig:3DEST}. ábra mutatja be.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/3DEST.png}
+    \caption{A 3DEST szerkezete. Az ábra Bi et al. (2023) \cite{bi_accurate_2023} cikkéből származik.}
+    \label{fig:3DEST}
+\end{figure}
+
+A 3DEST architektúra a bemenő adatokon ún. \textit{patch embedding}et végez, ami során a térbeli felbontást lecsökkenti és egy 3D-s kockába sűríti. Ezt követően a hálózat a 3D-s adatokat egy enkóder-dekóder architektúrába továbbítja, ami jelen esetben egy Swin-transzformer, ami a ViT egy fajtája. Az enkóder-dekóder architektúra által átalakított adatokon ezt követően \textit{patch recovery}t hajt végre, hogy az eredeti felbontást visszakapjuk. A modell célja középtávú (7+ nap) előrejelzések készítése volt, ami eléréséhez egy ún. \textit{hierarchical temporal aggregation} módszert, egy ,,mohó algoritmust" (\textit{greedy algorithm}) alkalmaztak. Mivel a neurális hálózatok rövid időtávra (1, 3, 6, 24 óra) pontosabban tudnak előrejelezni, a hosszabb távú előrejelzéseket rövidebb távúakból hierarchikusan állítják elő. Például ha 56 órára készítenek előrejelzést, először két 24 órás előrejelzést készítenek. A fennmaradó $56-2\cdot24=8$ órát egy 6 órás és 2 db 1 órás előrejelzéssel fedik le. Ezáltal az előrejelzési hibák kevésbé halmozódnak fel, mintha pl. 56 db 1 órás előrejelzést raknának össze \cite{bi_accurate_2023}.
+
+A következő bemutatott modell a Google által szintén 2023-ban publikált, GNN-alapú GraphCast modellje. A GNN-ek működése fentebb már említésre került. A modell a számításokat egy ún. \textit{multi-mesh}-en -- magas felbontású, ikozaéderes gráfon -- végzi. A modellben enkóder-processzor-dekóder architektúra található. Az 1 GNN-rétegből álló enkóder 6-szoros iteratív finomítás után az ikozaéder csomópontjait (\textit{node}-jait) a földgömbre vetíti; ezzel létrejönnek $M^0 ... M^6$ rácshálózat, ahol $M^0$ a legdurvább, $M^6$ pedig a legfinomabb felbontást jelenti. A teljes \textit{multi-mesh} mind a 7 rácshálózatot magában foglalja. A 16 GNN-réteget magában foglaló processzor a \textit{multi-mesh}-en az információ továbbítását tanulja. A szintén 1 GNN-rétegből álló dekóder a \textit{multi-mesh}-en megtanult jellemzőket visszavetíti a földrajzi fokhálózatra. A \textit{multi-mesh} egyik előnye, hogy -- szemben a hagyományos földrajzi fokhálózattal -- térben homogén, nincsen pl. a pólusokon \textit{node} felgyülemlés. A másik legnagyobb előnye, hogy a többféle felbontású rácshálózatokat magában foglaló \textit{multi-mesh}-en hatékonyabb az információ továbbítása: egy távoli pontba pl. először a legdurvább $M^0$-n, majd egyre finomabb rácshálókon halad az információ. A GraphCast modell működését a \ref{fig:graphcast}. ábra szemlélteti \cite{lam_graphcast_2023}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/graphcast.png}
+    \caption{A GraphCast modell működése. Az ábra Lam et al. (2023) \cite{lam_graphcast_2023} cikkéből származik.}
+    \label{fig:graphcast}
+\end{figure}
+
+A Chen et al. által 2023-ban bemutatott FuXi MLWP-modell három részből áll: a kocka beágyazásból (\textit{cube embedding}), egy U-transzformerből, illetve egy egy teljesen összekötött (\textit{fully connected}) rétegből. A \textit{cube embedding} célja a bemenő sokdimenziós adat idő- és térbeli dimenzióinak, ezáltal redundanciájának csökkentése. Az adatok feldolgozását egy U-transzformer végzi. Az adatdimenzió csökkentését egy alulmintavételező egység, a \textit{Down Block} végzi. Ezt követően 48 egymás utáni Swin-transzformer típusú ViT-ből dolgozza fel az adatokat. Végül az adatok dimenziójának növelését egy felülmintavételező egység, az \textit{Up Block} végzi. A modell felépítését a \ref{fig:fuxi}. ábra mutaja be \cite{chen_fuxi_2023}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/fuxi.png}
+    \caption{A FuXi modell áttekintő szerkezete. Az ábra Chen et al. (2023) \cite{chen_fuxi_2023} cikkéből származik.}
+    \label{fig:fuxi}
+\end{figure}
+
+Az ECMWF által 2024-ben bemutatott Artificial Intelligence Forecasting System (AIFS) modell több korábban bemutatott MLWP-modell előnyeit ötvözi; egyszerre GNN és transzformer alapú is. Az ERA5 rácshálózatról a processzor alacsonyabb felbontású oktaéderes gráfhálózatára vetítő enkóder és a visszalakítást végző dekóder GNN-transzformer (\textit{,,GNN attention"}) architektúrával rendelkezik. A processzor tisztán transzformer alapú, 16 db Swin-transzformer rétegből áll. A processzor a rácshálózatot alkotó gráf minden pontjának környezetét is figyelembe veszi egy adott levágási (\textit{cut-off}) sugáron belül.
 
 \subsection{MLWP-modellek kaotikus tulajdonságai}
+
 Azt, hogy megállapítsuk, hogy egy modell tudja-e a kaotikus jegyeket produkálni, legegyszerűbben az előrejelzésben valamilyen kezdeti perturbáció növekedésének vizsgálatával tehetjük meg. Ha a hiba exponenciálisan nő (azaz találunk pozitív Ljapunov-exponenst), a káosz jelen van a predikcióban.
 
+Ezt vizsgálták 2023-ban Selz \& Craig kis perturbációval ellátott ensemble (együttes) előrejelzések segítségével. A vizsgált modellek az MLWP-típusú Pangu-Weather és az NWP-típusú ICON modellek voltak; a modell-előrejelzések perturbációra adott válaszát vizsgálták. Azért fontos, hogy a perturbáció kicsi legyen, mert a nagy perturbáció elnyomja a modell-specifikus effektusokat, és az MLWP-modell úgy viselkedik, mint a hagyományos NWP-modellek. Az NWP-modellek alapján várható lenne, hogy a légkör kaotikussága miatt a hozzáadott kis hiba exponenciálisan kezd el nőni, ami az időjárás-előrejelzésnek egy inherens időbeli felső korlátot ad (,,pillangó-hatás"). Ezzel szemben Selz \& Craig azt tapasztalták, hogy a Pangu-Weather nem képes reprodukálni ezt a kezdeti exponenciális hibanövekedést, amivel egy hamis biztonságérzetet ad a hosszútávú időjárás-előrejelzések megbízhatóságára \cite{selz_can_2023}.
+
+Vizsgálatuk során kis- és nagy felbontású rácshálózatot is alkalmaztak. A nagy felbontású rácson (2,5 km) a konvekció -- a légkör egyik legkevésbé lineáris folyamata -- is megfigyelhető legyen. A vizsgálat esettanulmány-jellegű, 2021. június 26. 00 UTC inicializációs idejű előrejelzéseket használtak fel. Az időpont-választás oka, hogy ekkor Észak-Amerika felett -- nyár lévén -- nagyon jelentős konvekciós folyamatok zajlottak; azonban eredményeiket az egész Földre átlagolva adták meg \cite{selz_can_2023}.
+
+A hibanövekedés számszerűsítésére egy ilyen célra gyakran használt mennyiséget, a 300 hPa-on számolt kinetikus energia-különbséget (\textit{Difference Kinetic Energy, DKE}) alkalmazták:
+\[
+\text{DKE}=\text{Var}(u) + \text{Var}(v),
+\]
+ahol $u$ és $v$ a horizontális szélkomponensek \cite{selz_can_2023}. 
+
+A kutatók kis- és nagyobb perturbációkat is végeztek; eredményeiket a \ref{fig:selz-pert}. ábra foglalja össze.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./figures/selz-pert.png}
+    \caption{Az ICON és Pangu-Weather (\textit{Pangu}) nagy (\textit{100\%}) és kicsi (\textit{0.1 \%}) perturbációkra adott válaszai a DKE növekedésén keresztül bemutatva. A \textit{HR} a nagy felbontást (2.5 km), a \textit{LR} az alacsony felbontást (20 km) jelent. Az ábra Selz \& Craig (2023) \cite{selz_can_2023} cikkéből származik.}
+    \label{fig:selz-pert}
+\end{figure}
+
+A nagy perturbáció során alátámasztásra került a várakozásuk, hogy az elnyomja az MLWP-modell jellegzetességeit: az erősen perturbált Pangu-Weather (\textit{Pangu-100\%}) hasonlóan viselkedett, mint az erősen perturbált ICON (\textit{ICON-LR-100\%}). A kicsit perturbált ICON (\textit{ICON-0.1\%}) esetében is az NWP-modellektől elvárható eredményre jutottak: a hiba nagyon gyorsan kezdett nőni, míg szaturációba nem került (48 óra után a hibanövekedési ütem kb. megegyezett az erősen perturbált ICON-éval). Ha az alacsonyabb felbontású, kicsit perturbált modellt (\textit{ICON-LR-0.1\%}) a magasabb felbontásúhoz (\textit{ICON-HR-0.1\%}) hasonlítjuk, megfigyelhető, hogy az alacsonyabb felbontású alulbecsli a hibát már néhány óra elteltével. Ennek oka az lehet, hogy a kis felbontás miatt nincsenek megfelelően reprezentálva a hibához jelentősen hozzájáruló nemlineáris konvektív folyamatok \cite{selz_can_2023}.
+
+A kicsit perturbált Pangu-Weather modell hibanövekedésének időbeli lefutása nagyon hasonló az erősebben perturbáltéhoz; az eltolás a hibában a perturbáció mértékével arányos. A Pangu-Weather az ICON modellhez képest alulbecsli a hibát és konstans hibanövekedést mutat az exponenciális helyett, ami -- helytelenül -- sokkal hosszabb távú előrejelezhetőséget sugall \cite{selz_can_2023}.
+
+Azonban a fent említett vizsgálat elvégzéséhez -- tekintve, hogy az ensemble előrejelzések sok tagból állnak -- rendkívül magas számítási kapacitásra van szükség. Selz \& Craig pl. az ECMWF Atos nevű szuperszámítógépét használták. A Pangu-Weather kísérletek 16, az alacsony felbontású ICON-kísérletek 2900, a magas felbontású ICON-kísérletek pedig 1300000 számítási órába kerültek egyenként \cite{selz_can_2023}.
+
+Ennél olcsóbb módszerek lehetnek az előrejelzési idősorban való kaotikus viselkedés észlelése, vagy trajektóriamodellezés.
+
+Az előrejelzési idősorban való kaotikus viselkedés észlelésére felhasználható módszerekkel foglalkozik Pánis et al. 2020-as cikke \cite{panis_detection_2020}.
+
+A kaotikus rendszereket fázistérben (pl. sebesség-kitérés koordináta-rendszer) ábrázolva komplex, de rendezett, fraktálszerű alakzatot kapunk. A fraktálok olyan geometriai alakzatok, melyek kerülete és felülete nincs definiálva és önhasonlóak; ezt szemlélteti a \ref{fig:koch}. ábrán feltüntetett híres példa, a Koch-görbe, melynek területe véges marad ugyan, de kerülete a végtelenhez tart \cite{tel_kaotikus_2002}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{./figures/koch.png}
+    \caption{A Koch-görbe szerkesztése és fraktálszerkezete. Az ábrák Tél \& Gruiz Kaotikus dinamika című tankönyvéből (2002) származnak \cite{tel_kaotikus_2002}.}
+    \label{fig:koch}
+\end{figure}
+
+A fraktálokat fraktáldimenzióval szokás jellemezni, ami síkbeli (térbeli) alakzatoknál egynél (kettőnél) nagyobb, de kettőnél (háromnál) kisebb tört vagy irracionális szám; a dimenzió nagysága az alakzat tagoltságával arányos. Fedjük le ezeket az alakzatokat $\varepsilon$ karakterisztikus méretű dobozokkal (\textit{box}-okkal). Míg pl. egy hagyományos síkbeli alakzat lefedéséhez $\varepsilon^{-2}$-el arányos az alakzat egyre finomabb lefedéséhez szükséges dobozok száma, addig fraktáloknál a kitevő egy nem egész szám, a fraktáldimenzió lesz:
+\[
+N(\varepsilon)\propto \varepsilon^{-D_0},
+\]
+ahol $\varepsilon \rightarrow 0$, $N$ az alakzat lefedéséhez szükséges minimális számú doboz, $D_0$ pedig a fraktáldimenzió. Átrendezve:
+\[
+D_0=\lim_{\varepsilon \rightarrow 0}\frac{\ln N(\varepsilon)}{\ln 1/\varepsilon}
+\]
+adja meg a fraktáldimenziót. A box-counting módszer arra épül, hogyha tudunk ilyen fraktáldimenziót találni, akkor a vizsgált idősor kaotikus jeleket mutat \cite{tel_kaotikus_2002,panis_detection_2020}.
+
+Másik módszer az idősor-adatokban a káosz észlelésére a korrelációs dimenzió ($D_2$) vizsgálata. A korrelációs dimenzió kiszámítása során megszámoljuk, hogy hány pontpár ($C(\varepsilon)$) van egymáshoz közelebb, mint egy nagyon kicsi $\varepsilon$ küszöbérték:
+\[
+D_2=\lim_{\varepsilon \rightarrow 0}\frac{\ln C(\varepsilon)}{\ln \varepsilon}.
+\]
+Ha találunk korrelációs dimenziót, az idősor kaotikus \cite{panis_detection_2020}.
+
+Következő módszer a Ljapunov-exponens keresése. Ha a kaotikus attraktor egy $\mathbf{r}$ pontja körül két közeli pontból indítunk részecskéket, távolságuk a lépések $n$ számának növelésével exponenciálisan nőni fog:
+\[
+\Delta r_n=\Delta r_0 e^{\bar{\lambda}n},
+\]
+ahol $\Delta r_0$ a kezdeti (kicsi) távolságuk, $\bar{\lambda}$ pedig a fázistérhez rendelhető átlagos Ljapunov-exponens. Kaotikus rendszerekben $\bar{\lambda}>0$. Ha az idősorban sikerül pozitív Ljapunov-exponenst találni -- pl. egyenesillesztéssel --, akkor a rendszer, ahonnan az idősor származik, kaotikus \cite{panis_detection_2020}.
+
+A gépi tanulás a kaotikus viselkedés detektálására is használhatjuk. Alkotható olyan modell, amely a kaotikus minták felismerésére van tanítva, így az ember számára nehezen felismerhető vagy észrevétlenül maradt mintázatokat is képes felismerni \cite{panis_detection_2020}.
+
+A kaotikus jelek detektálására használhatóak lagrange-i trajektória modellek is: szimulálható segítségükkel, hogy a légkör egy térfogatdarabja (pl. egy szennyezés) hogyan változtatja térfogatát, növeli időben exponenciálisan a szálainak a hosszát, majd áll rá a kaotikus attraktorra \cite{haszpra_replat_2014}. Egy további mennyiség a káosz jellemzésére a topologikus entrópia. A mennyiség a mozgás bonyolultságával van kapcsolatban; ha pozitív, a rendszer kaotikus. A topologikus entrópiával jellemezhető egy kezdetben $L_0$ hosszú vonaldarab megnyúlása is:
+\[
+L(t)\propto e^{ht} \quad (t\gg 1/h),
+\]
+ahol $h$ a topologikus entrópia. A mennyiség becslése sok részecske pályájának modellezés általi nyomon követésével lehetséges \cite{haszpra_ensemble-based_2019}.
 
 
 
