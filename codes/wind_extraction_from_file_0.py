@@ -20,8 +20,7 @@ def extractData(filename, t, p, j, i):
         v = ds_wind["v"].isel(step=t, isobaricInhPa=p, latitude=j, longitude=i).values
         
         wind_speed = float(np.sqrt(u**2 + v**2))
-        wind_dir_rad = np.arctan2(u, v)
-        wind_direction = float((np.degrees(wind_dir_rad) + 180) % 360)
+        wind_direction = np.degrees(np.arctan2(u, v)) #TO which direction the wind blows
         
     except Exception:
         wind_direction, wind_speed = None, None
@@ -38,7 +37,7 @@ lat_indices = [100]
 lon_indices = [1100]
 
 print(f"{'t index':^15} | {'p index':^15} | {'j index':^15} | {'i index':^15} | {'wdir (°)':^15} | {'wspeed (m/s)':^15}")
-print("-" * 102)
+print("-" * 110)
 
 for t in timesteps:
     for p in pressure_indices:
