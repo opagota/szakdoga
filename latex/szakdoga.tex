@@ -253,16 +253,45 @@ Következő módszer a Ljapunov-exponens keresése. Ha a kaotikus attraktor egy 
 \]
 ahol $\Delta r_0$ a kezdeti (kicsi) távolságuk, $\bar{\lambda}$ pedig a fázistérhez rendelhető átlagos Ljapunov-exponens. Kaotikus rendszerekben $\bar{\lambda}>0$. Ha az idősorban sikerül pozitív Ljapunov-exponenst találni -- pl. egyenesillesztéssel --, akkor a rendszer, ahonnan az idősor származik, kaotikus \cite{panis_detection_2020}.
 
-A gépi tanulás a kaotikus viselkedés detektálására is használhatjuk. Alkotható olyan modell, amely a kaotikus minták felismerésére van tanítva, így az ember számára nehezen felismerhető vagy észrevétlenül maradt mintázatokat is képes felismerni \cite{panis_detection_2020}.
+A gépi tanulást a kaotikus viselkedés detektálására is használhatjuk. Alkotható olyan modell, amely a kaotikus minták felismerésére van tanítva, így az ember számára nehezen felismerhető vagy észrevétlenül maradt mintázatokat is képes felismerni \cite{panis_detection_2020}.
 
-A kaotikus jelek detektálására használhatóak lagrange-i trajektória modellek is: szimulálható segítségükkel, hogy a légkör egy térfogatdarabja (pl. egy szennyezés) hogyan változtatja térfogatát, növeli időben exponenciálisan a szálainak a hosszát, majd áll rá a kaotikus attraktorra \cite{haszpra_replat_2014}. Egy további mennyiség a káosz jellemzésére a topologikus entrópia. A mennyiség a mozgás bonyolultságával van kapcsolatban; ha pozitív, a rendszer kaotikus. A topologikus entrópiával jellemezhető egy kezdetben $L_0$ hosszú vonaldarab megnyúlása is:
+A kaotikus jelek detektálására használhatóak lagrange-i trajektória modellek is: szimulálható segítségükkel, hogy a légkör egy térfogatdarabja (pl. egy szennyezés) hogyan változtatja térfogatát, növeli időben exponenciálisan a szálainak a hosszát, majd áll rá a kaotikus attraktorra \cite{haszpra_replat_2014}.
+
+A terjedési modellek célja, hogy a meteorológiai viszonyok (szélvektor) ismeretében modellezzék, hogy a légkörben egy részecske hogyan terjed. A terjedési modellek időjárás-előrejelző modellekkel vannak meghajtva, azok szélviszony-előrejelzései szolgáltatják a széladatokat a részecske mozgásának modellezéséhez. A terjedési modellekkel figyelembe lehet venni a felszínközeli viszonyokat, mint a súrlódás, azonban az bonyolulttá teszi a modellt. Ha alacsonyabb nyomású izobárszinteken vizsgáljuk a részecskék terjedését, dominánsan csak a szél fogja befolyásolni a részecske terjedését, így a súrlódás elhanyagolhatóvá válik. 
+
+A szimulált trajektóriák felhasználásával is ki lehet mutatni a káosz jelenlétét, legegyszerűbben a topologikus entrópia ($h$) segítségével tehető ez meg. A mennyiség jellemzi egy kezdetben $L_0$ hosszú fonaldarab megnyúlását:
 \[
-L(t)\propto e^{ht} \quad (t\gg 1/h),
+L(t)=L_0 \cdot e^{ht} \quad (t\gg 1/h),
 \]
-ahol $h$ a topologikus entrópia. A mennyiség becslése sok részecske pályájának modellezés általi nyomon követésével lehetséges \cite{haszpra_ensemble-based_2019}.
+tehát a mozgás bonyolultságával van kapcsolatban: minél nagyobb $h$, annál bonyolultabb lesz a mozgás (jobban megnyúlik a kezdeti fonaldarab). Ha $h>0$, a mozgás kaotikus. A topologikus entrópia becslése sok részecske pályájának nyomon követésével lehetséges \cite{haszpra_ensemble-based_2019}.
 
 
+\section{Adat, módszer}
+Vizsgálataim során 2 dimenziós trajektóriamodellt hajtottam meg 2026. június 1-én UTC szerint 0 órakor készült ECMWF-IFS, illetve ECMWF-AIFS szél-előrejelzésekkel. Az előrejelzések középtávúak (360 órára előre készülnek el 6 órás lépésekkel), determinisztikusak, és jelentős számú izobárszintre (1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa) elkészülnek $0,25^\circ \times 0,25^\circ$ felbontással.
 
+\subsection{A trajektóriamodell}
+A trajektóriamodell Pythonban íródott.
+
+A modell bemeneteként beállítható, hogy melyik előrejelzési .grib fájlt kívánjuk felhasználni, milyen tértartományból és milyen sűrűséggel indítjuk a részecskéket, melyik izobárszinten vizsgálódunk, mennyi időre futtatjuk a szimulációt (a maximum az előrejelzések által meghatározott 360 óra), illetve hogy milyen időbeli sűrűséggel szeretnénk elmenteni a részecskék helyzetét.
+
+Mivel a modellelőrejelzések csak 6 óránként állnak rendelkezésre, a kód lineáris interpolációt végez a köztes időpillanatok szélsebességének kiszámítására, amivel egy időben folytonosan változó szélsebesség-mezőt hoz létre.
+
+Az elengedett részecskék trajektóriájának kiszámításához a következő differenciálegyenlet-rendszert szükséges megoldani minden részecskére:
+\[
+\frac{d \lambda}{d t} = u\cdot C \cdot \frac{1}{\cos \varphi},
+\]
+\[
+\frac{d \varphi}{d t} = v \cdot C,
+\]
+ahol $u$ a keleti (zonális)-, $v$ pedig az északi (meridionális) szélkomponens $m/s$-ban; $C$ egy váltószám, ami a $m$-t $^\circ$-ba váltja át ($C=\frac{180 ^\circ}{\pi \cdot R}$, ahol $R=6371000 \ m$ a Föld sugara); $\lambda$ a részecske (keleti) hosszúsági koordinátája, $\varphi$ az (északi) szélességi koordinátája; $t$ pedig a szimulációs idő másodpercben. A 0-val való osztást úgy akadályozzuk meg, hogy a szélességi köröket csak $-89,9^\circ$ és $89,9^\circ$ között vesszük. A differenciálegyenlet-rendszert az elterjedt Runge-Kutta 4(5) numerikusan integráló módszer segítségével oldjuk meg. A Runge-Kutta módszer adaptív időlépésekkel dolgozik. Az esetlegesen fellépő túl nagy időlépés alkalmazását úgy akadályoztuk meg, hogy a maximális lépésközt 10 percre állítottuk. A relatív és abszolút hibatoleranciát is $10^{-3}$-ra állítottuk.
+
+
+\subsection{Kaotikus viselkedés számszerűsítése}
+A modellezett trajektóriák felhasználásával topologikus entrópiát számoltam. Ehhez a szimuláció minden időlépésében szükséges kiszámolni a részecskéket képzeletben összekötő, egyre bonyolultabb alakot felvevő fonal hosszát. Ez úgy tehető meg, hogy az adott időlépésben a részecskék koordinátáinak ismeretében kiszámolom, milyen messze vannak egymástól a szomszédos részecskék, és ezeket a távolságokat összeadom. Ha a részecskék elég sűrűen vannak elhelyezkedve, ezzel a módszerrel viszonylag pontosan megkapható a fonal megnyúlásának időfüggése, a kapott adatokra való illesztéssel pedig egyszerűen meghatározható a $h$ topologikus entrópia. 
+
+A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A hiba áthidalására a részecskéket egymástól $0,005 ^\circ$-ra indítottam, ami kb. 500 m-t jelent. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
+
+A fonal hosszát szemilogaritmikus diagramon ábrázoljuk az idő függvényében, így egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{myplain}
