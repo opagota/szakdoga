@@ -1,6 +1,6 @@
 \listfiles
 \documentclass[12pt,a4paper]{article}
-\input{/home/opago/Documents/0EGYETEM/0Szakdoga/latex/preamble_szakdoga.tex}
+\input{./preamble_szakdoga.tex}
 
 
 \begin{document}
@@ -267,7 +267,7 @@ tehát a mozgás bonyolultságával van kapcsolatban: minél nagyobb $h$, annál
 
 
 \section{Adat, módszer}
-Vizsgálataim során 2 dimenziós trajektóriamodellt hajtottam meg 2026. június 1-én UTC szerint 0 órakor készült ECMWF-IFS, illetve ECMWF-AIFS szél-előrejelzésekkel. Az előrejelzések középtávúak (360 órára előre készülnek el 6 órás lépésekkel), determinisztikusak, és jelentős számú izobárszintre (1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa) elkészülnek $0,25^\circ \times 0,25^\circ$ felbontással.
+Vizsgálataim során 2 dimenziós trajektóriamodellt hajtottam meg 2026. június 1-én UTC szerint 0 órakor készült ECMWF-IFS, illetve ECMWF-AIFS szél-előrejelzésekkel. Az előrejelzések középtávúak (360 órára előre készülnek el 6 órás lépésekkel), determinisztikusak, és jelentős számú izobárszintre (1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa) elkészülnek $0,25^\circ \times 0,25^\circ$ globális térbeli felbontással.
 
 \subsection{A trajektóriamodell}
 A trajektóriamodell Pythonban íródott.
@@ -283,15 +283,103 @@ Az elengedett részecskék trajektóriájának kiszámításához a következő 
 \[
 \frac{d \varphi}{d t} = v \cdot C,
 \]
-ahol $u$ a keleti (zonális)-, $v$ pedig az északi (meridionális) szélkomponens $m/s$-ban; $C$ egy váltószám, ami a $m$-t $^\circ$-ba váltja át ($C=\frac{180 ^\circ}{\pi \cdot R}$, ahol $R=6371000 \ m$ a Föld sugara); $\lambda$ a részecske (keleti) hosszúsági koordinátája, $\varphi$ az (északi) szélességi koordinátája; $t$ pedig a szimulációs idő másodpercben. A 0-val való osztást úgy akadályozzuk meg, hogy a szélességi köröket csak $-89,9^\circ$ és $89,9^\circ$ között vesszük. A differenciálegyenlet-rendszert az elterjedt Runge-Kutta 4(5) numerikusan integráló módszer segítségével oldjuk meg. A Runge-Kutta módszer adaptív időlépésekkel dolgozik. Az esetlegesen fellépő túl nagy időlépés alkalmazását úgy akadályoztuk meg, hogy a maximális lépésközt 10 percre állítottuk. A relatív és abszolút hibatoleranciát is $10^{-3}$-ra állítottuk.
+ahol $u$ a keleti (zonális)-, $v$ pedig az északi (meridionális) szélkomponens m/s-ban; $C$ egy váltószám, ami a m-t $^\circ$-ba váltja át ($C=\frac{180 ^\circ}{\pi \cdot R}$, ahol $R=6371000$ m a Föld sugara); $\lambda$ a részecske (keleti) hosszúsági koordinátája, $\varphi$ az (északi) szélességi koordinátája; $t$ pedig a szimulációs idő másodpercben. A 0-val való osztást úgy akadályozzuk meg, hogy a szélességi köröket csak $-89,9^\circ$ és $89,9^\circ$ között vesszük. A differenciálegyenlet-rendszert az elterjedt Runge-Kutta 4(5) numerikusan integráló módszer segítségével oldjuk meg. A Runge-Kutta módszer adaptív időlépésekkel dolgozik. Az esetlegesen fellépő túl nagy időlépés alkalmazását úgy akadályoztuk meg, hogy a maximális lépésközt 10 percre állítottuk. A relatív és abszolút hibatoleranciát is $10^{-3}$-ra állítottuk.
 
 
 \subsection{Kaotikus viselkedés számszerűsítése}
-A modellezett trajektóriák felhasználásával topologikus entrópiát számoltam. Ehhez a szimuláció minden időlépésében szükséges kiszámolni a részecskéket képzeletben összekötő, egyre bonyolultabb alakot felvevő fonal hosszát. Ez úgy tehető meg, hogy az adott időlépésben a részecskék koordinátáinak ismeretében kiszámolom, milyen messze vannak egymástól a szomszédos részecskék, és ezeket a távolságokat összeadom. Ha a részecskék elég sűrűen vannak elhelyezkedve, ezzel a módszerrel viszonylag pontosan megkapható a fonal megnyúlásának időfüggése, a kapott adatokra való illesztéssel pedig egyszerűen meghatározható a $h$ topologikus entrópia. 
+A modellezett trajektóriák felhasználásával topologikus entrópiát számoltam. Ehhez a szimuláció minden időlépésében szükséges kiszámolni a részecskéket képzeletben összekötő, egyre bonyolultabb alakot felvevő fonal hosszát. Ez úgy tehető meg, hogy az adott időlépésben a részecskék koordinátáinak ismeretében kiszámolom, milyen messze vannak egymástól a szomszédos részecskék, és ezeket a távolságokat összeadom. Ha a részecskék elég sűrűen helyezkednek el, ezzel a módszerrel viszonylag pontosan megkapható a fonal megnyúlásának időfüggése, a kapott adatokra való illesztéssel pedig egyszerűen meghatározható a $h$ topologikus entrópia. 
 
-A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A hiba áthidalására a részecskéket egymástól $0,005 ^\circ$-ra indítottam, ami kb. 500 m-t jelent. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
+A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A részecskéket ezért egymástól $0,005 ^\circ$-ra indítottam, ami kb. 500 m-t jelent. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
 
-A fonal hosszát szemilogaritmikus diagramon ábrázoljuk az idő függvényében, így egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát.
+A fonal hosszát szemilogaritmikus diagramon ábrázolva az idő függvényében egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát.
+
+\section{Eredmények}
+A modellt ECMWF-IFS, illetve ECMWF-AIFS szélelőrejelzésekkel is meghajtottam. A vizsgálatokat több izobárszinten (850, 700, 500 hPa) végeztem, különböző előrejelzési időtávokra (168, 240, 360 óra). A fonalhosszat az idő függvényében szemilogaritmikus skálán ábrázoltam. Ahol egyértlemű volt a kezdeti tranziens szakasz után az exponenciálisra beállás, ott határoztam meg a tranziens szakasz végét, ahonnan az illesztés kezdődött (75. óránál). Az illesztés végét ott határoztam meg, ahol a szemilogaritmikus skálán lineáris szakasz kezdett elhajlani a lineáristól (150. óránál). Az illesztett egyenes meredeksége a topologikus entrópia, hibájának az illesztés hibáját vettem. A topologikus entrópia illesztett értékeit a \ref{tab:h}. táblázat mutatja be. Az illesztéseket vizuálisan a 168 órás időtávon a \ref{fig:168h_fit}. ábra szemlélteti.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}\hline
+    \textbf{p [hPa]} & \textbf{850}& \textbf{700}& \textbf{500}\\\hline
+    \textbf{AIFS} & 0,02459(4) & 0,02373(5) & 0,019945(9)\\\hline
+    \textbf{IFS} & 0,02563(2) & 0,02350(3) & 0,022231(9)\\\hline
+\end{tabular}
+\caption{Topologikus entrópia [1/óra]}
+\label{tab:h}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_850hPa_AIFS"}
+        \caption{850 hPa, AIFS}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_850hPa_IFS"}
+        \caption{850 hPa, IFS}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_700hPa_AIFS"}
+        \caption{700 hPa, AIFS}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_700hPa_IFS"}
+        \caption{700 hPa, IFS}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_500hPa_AIFS"}
+        \caption{500 hPa, AIFS}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_500hPa_IFS"}
+        \caption{500 hPa, IFS}
+    \end{subfigure}
+
+    \caption{Illesztés a 168 órás futási időre.}
+    \label{fig:168h_fit}
+\end{figure}
+
+Kisebb térbeli felbontás esetén a topologikus entrópia nem volt jól illeszthető (\ref{fig:27km}. ábra).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{"../codes/topo_entr/topo_entr_figs/topo_entr_figs_orig/h_168h_27km_500hPa_AIFS.png"}
+    \caption{$0,25^\circ \times 0,25^\circ$ felbontás, 168 órás futási idő, 500 hPa, AIFS.}
+    \label{fig:27km}
+\end{figure}
+
+Hosszabb futási időtávokra a szemilogaritmikus skálán ábrázolt függvények elkezdtek elhajlani a lineáristól (\ref{fig:240h_bias}. ábra). Ennek oka az lehet, hogy ilyen hosszú időtávon a szomszédos részecskék már túl távol kerültek egymáshoz, és így a távolságukon alapuló fonalhossz számolás már pontatlanná válik, alábecsüli a valódi hosszat. Az illesztést itt is a korábban meghatározott 75. és 150. óra közötti időszakra végeztem.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_240h_500m_500hPa_AIFS"}
+        \caption{500 hPa, AIFS}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_240h_500m_500hPa_IFS"}
+        \caption{500 hPa, IFS}
+    \end{subfigure}
+    \caption{240 órás futási időnél a függvények már elhajlanak a lineáristól.}
+    \label{fig:240h_bias}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{myplain}
