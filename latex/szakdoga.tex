@@ -5,7 +5,49 @@
 
 \begin{document}
 
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    {\large Eötvös Loránd Tudományegyetem Természettudományi Kar\par}
+    \vspace{0.5cm}
+    {\Huge \bfseries Gépi tanuláson alapuló időjárás-előrejelző modell kaotikusságának vizsgálata légköri trajektóriákkal\par}
+    \vspace{1cm}
+    {\Large Tudományos Diákköri Konferencia dolgozat}
+    
+    \vspace{3cm}
+    \includegraphics[width=12cm]{elte_logo.png}
+    \vspace{3cm}
+    
+
+    {\Large
+    Készítette: \textbf{Opposits Ágota}\par}
+    {\large Fizika BSc III. évfolyam\par}
+    \vspace{0.5cm}
+    {\Large Témavezető: \textbf{Leelőssy Ádám} \par}
+    {\large Egyetemi adjunktus\par}
+    {\Large Témavezető: \textbf{Haszpra Tímea} \par}
+    {\large Tudományos főmunkatárs\par}
+    \vspace{1cm}
+    {\Large Budapest, 2026 \par}
+    
+\end{titlepage}
+
+
 \tableofcontents
+\newpage
+
+\begin{abstract}
+    A mesterséges intelligencián alapuló időjárás-előrejelző modellek (Machine Learning Weather Prediction, MLWP) 2020-as évek elején történő elterjedése óta sok kutatás irányult a hagyományos előrejelző technológiáktól alapjaiban eltérő módszer adta lehetőségek vizsgálatára. A modern MLWP-modellek mély neurális hálózat alapúak, és egy költségfüggvény minimalizálására vannak betanítva. Az adatalapú megközelítés következtében a modellek nem ismerik expliciten a légkör kormányzó egyenleteit, amely fizikai inkonzisztenciákhoz vezethet. A szakirodalom jelenleg nem tekinti az MLWP-modelleket a légkör megfelelő szimulátorainak.
+
+    Kutatásomban trajektóriamodellezésen keresztül megvizsgálom, hogy a European Centre for Medium-Range Weather Forecasts (ECMWF) jelenleg élvonalbeli hagyományos, kaotikus jegyeket bizonyítottan mutató modelljével (IFS) szemben az MLWP-modellje (AIFS) mutat-e kaotikus viselkedést.
+
+    2026. június 1-jén UTC 0 órakor futtatott szélelőrejelzéseket használtam. Az előrejelzések tér- és időbeli felbontásának finomítása lineáris interpolációval történt. Egymáshoz közel indított részecskék trajektóriáira felírt, csak a szél sodrását figyelembe vevő differenciálegyenlet-rendszert adott izobárszinten a modellek szélsebesség-előrejelzéseit felhasználva numerikusan integráltam. A részecskéket összekötő fonal hosszának exponenciális időbeli változásából topologikus entrópia számolható.
+
+    Az IFS és AIFS esetében is sikerült exponenciális időbeli változást kimutatni, és pozitív topologikus entrópiát meghatározni, ami kaotikus viselkedésre utal. Durva térbeli felbontáson topologikus entrópia nem volt meghatározható. 150 óránál hosszabb előrejelzési időtávon az exponenciális kapcsolat az IFS-nél és AIFS-nél is kimutathatatlanná vált, ami a szomszédos részecskék egymástól való túlzott eltávolodásával, ezáltal pedig a topologikus entrópia alulbecslésével magyarázható.
+    A vizsgált szinteken (500, 700, 850 hPa) az AIFS topologikus entrópiája jellemzően alacsonyabb, mint az IFS-é, melynek oka lehet az MLWP modellekre jellemző elmosódás jelensége. A vizuálisan ábrázolt, IFS szélelőrejelzésén alapuló trajektória-előrejelzések AIFS-énél komplexebb térbeli szerkezete is ezt támasztja alá. A földfelszín zavaró hatása megfigyelhető, magasabb nyomású izobárszinteken a topologikus entrópia magasabb.
+
+    Az alkalmazott lagrange-i megközelítés alapján tehát az AIFS is mutat kaotikus tulajdonságokat, ami azt jelenti, hogy a modell nem veszíti el teljesen a tanulás során a légkör ezen tulajdonságának reprezentálását, de az elmosódás hatása megfigyelhető.
+\end{abstract}
 \newpage
 
 \section{Bevezetés}
@@ -311,13 +353,13 @@ A modellt ECMWF-IFS, illetve ECMWF-AIFS szélelőrejelzésekkel is meghajtottam.
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_850hPa_AIFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_850hPa_AIFS"}
         \caption{850 hPa, AIFS}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_850hPa_IFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_850hPa_IFS"}
         \caption{850 hPa, IFS}
     \end{subfigure}
 
@@ -325,13 +367,13 @@ A modellt ECMWF-IFS, illetve ECMWF-AIFS szélelőrejelzésekkel is meghajtottam.
 
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_700hPa_AIFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_700hPa_AIFS"}
         \caption{700 hPa, AIFS}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_700hPa_IFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_700hPa_IFS"}
         \caption{700 hPa, IFS}
     \end{subfigure}
 
@@ -339,13 +381,13 @@ A modellt ECMWF-IFS, illetve ECMWF-AIFS szélelőrejelzésekkel is meghajtottam.
 
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_500hPa_AIFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_500hPa_AIFS"}
         \caption{500 hPa, AIFS}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_168h_500m_500hPa_IFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_168h_500m_500hPa_IFS"}
         \caption{500 hPa, IFS}
     \end{subfigure}
 
@@ -357,7 +399,7 @@ Kisebb térbeli felbontás esetén a topologikus entrópia nem volt jól illeszt
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{"../codes/topo_entr/topo_entr_figs/topo_entr_figs_orig/h_168h_27km_500hPa_AIFS.png"}
+    \includegraphics[width=0.5\linewidth]{"./figures/topo_entr/h_168h_27km_500hPa_AIFS.png"}
     \caption{$0,25^\circ \times 0,25^\circ$ felbontás, 168 órás futási idő, 500 hPa, AIFS.}
     \label{fig:27km}
 \end{figure}
@@ -368,19 +410,24 @@ Hosszabb futási időtávokra a szemilogaritmikus skálán ábrázolt függvény
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_240h_500m_500hPa_AIFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_240h_500m_500hPa_AIFS"}
         \caption{500 hPa, AIFS}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../codes/topo_entr/topo_entr_figs/h_240h_500m_500hPa_IFS"}
+        \includegraphics[width=\textwidth]{"./figures/topo_entr/h_240h_500m_500hPa_IFS"}
         \caption{500 hPa, IFS}
     \end{subfigure}
     \caption{240 órás futási időnél a függvények már elhajlanak a lineáristól.}
     \label{fig:240h_bias}
 \end{figure}
 
+
+
+
+\section{Köszönetnyilvánítás}
+A kutatás az NKKP STARTING 153030 projekt keretében készült.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{myplain}
 \bibliography{szakdolgozat}
