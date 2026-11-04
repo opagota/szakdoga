@@ -160,27 +160,27 @@ class traj():
                     t_current = t_bound
 
         
-            y0 = np.concatenate([lon0, lat0]) 
-            t_start = t_span[0]
-            t_final = t_span[1]
-            threshold_meters = 10000.0 
+        y0 = np.concatenate([lon0, lat0]) 
+        t_start = t_span[0]
+        t_final = t_span[1]
+        threshold_meters = 10000.0 
 
-            time_arr, y_list_of_arrays = integrater(ode_func, t_start, y0, t_final, threshold_meters)
+        time_arr, y_list_of_arrays = integrater(ode_func, t_start, y0, t_final, threshold_meters)
             
-            particle_lons_list = []
-            particle_lats_list = []
+        particle_lons_list = []
+        particle_lats_list = []
 
-            for y_state in y_list_of_arrays:
-                N_step = len(y_state) // 2
-                particle_lons_list.append(y_state[:N_step])
-                particle_lats_list.append(y_state[N_step:])
+        for y_state in y_list_of_arrays:
+            N_step = len(y_state) // 2
+            particle_lons_list.append(y_state[:N_step])
+            particle_lats_list.append(y_state[N_step:])
 
-            y_obj_array = np.empty(len(y_list_of_arrays), dtype=object)
-            y_obj_array[:] = y_list_of_arrays
+        y_obj_array = np.empty(len(y_list_of_arrays), dtype=object)
+        y_obj_array[:] = y_list_of_arrays
             
-            np.savez_compressed(f"./traj_sols/trajectory_solution_{self.lead_time}h_500m_{self.isobar}hPa_{self.model}.npz", t=time_arr, y=y_obj_array)
-  
-            return time_arr, particle_lons_list, particle_lats_list
+        np.savez_compressed(f"./traj_sols/trajectory_solution_{self.lead_time}h_500m_{self.isobar}hPa_{self.model}.npz", t=time_arr, y=y_obj_array)  
+
+        return time_arr, particle_lons_list, particle_lats_list
 
     def plot_traj(self, time_arr, lons_list, lats_list, outpath=''):
 
