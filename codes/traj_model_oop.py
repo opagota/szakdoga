@@ -64,7 +64,7 @@ class traj():
         return 6371000 * c
         
 
-    def calculate_trajectory(self, lon0, lat0, t_span, t_eval=None):
+    def calculate_trajectory(self, lon0, lat0, t_span):
         lon0 = np.atleast_1d(lon0)
         lat0 = np.atleast_1d(lat0)
         N_initial = len(lon0)
@@ -252,7 +252,7 @@ class traj():
 #************************************************************************************************************************************************************************************************************************************
 
 #initialization
-lat_start = np.arange(45.0, 55.01, 0.25)
+lat_start = np.arange(45.0, 55.01, 0.005)
 lon_start = np.zeros(lat_start.shape) + 20
 init_date = 20260601
 lead_time = 168
@@ -261,15 +261,14 @@ tstep = 60  # seconds timestep --> this is the output timestep! The internal int
 
 #derived things
 t_span = (0, lead_time*3600)
-t_eval = np.arange(0, lead_time*3600, tstep)
 
 #instantiation
 traj_aifs = traj("../RAPTOR/met", "aifs", init_date, lead_time, isobar)
-time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
+time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span)
 traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
 
 traj_ifs = traj("../RAPTOR/met", "ifs", init_date, lead_time, isobar)
-time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
+time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span)
 traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
 
 
