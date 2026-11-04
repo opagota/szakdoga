@@ -48,7 +48,6 @@ class traj:
             
         return self._interp_cache[time]
 
-
     def interpolate_spatially(self, coords, time):
         lons = coords[0].copy()
         lats = coords[1].copy()
@@ -69,10 +68,10 @@ class traj:
         t1 = int(np.floor(time / 6.0) * 6)
         t2 = t1 + 6
         if np.isclose(time, t1):
-            return self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
+            return self.interpolate_spatially(coords, time=t1)
         try:
-            uv1 = self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
-            uv2 = self.interpolate_spatially(coords, time=t2, interpolation=interpolation)
+            uv1 = self.interpolate_spatially(coords, time=t1)
+            uv2 = self.interpolate_spatially(coords, time=t2)
         except ValueError as e:
             raise ValueError(f"Cannot temporally interpolate to forecast hour {time}. Original error: {e}")
         w = (time - t1) / (t2 - t1)
@@ -87,7 +86,6 @@ class traj:
         c = 2 * np.arcsin(np.sqrt(a)) 
         return 6371000 * c
         
-
     def calculate_trajectory(self, lon0, lat0, t_span):
         lon0 = np.atleast_1d(lon0)
         lat0 = np.atleast_1d(lat0)
@@ -243,7 +241,7 @@ class traj:
 
     #**********************************************************************************TOPOLOGICAL ENTROPY CALCULATIONS**************************************************************************************
 
-    def calc_yarn_length(self, lons_list, lats_list):    
+    def calc_yarn_length(self, lons_list, lats_list):   
         lengths = []
         for lons, lats in zip(lons_list, lats_list):
             if len(lons) < 2:
@@ -277,7 +275,7 @@ if __name__ == "__main__":
     lat_start = np.arange(45.0, 55.01, 0.05)
     lon_start = np.zeros(lat_start.shape) + 20
     init_date = 20260601
-    lead_time = 168
+    lead_time = 6
     isobar = 500
 
     t_span = (0, lead_time*3600)
@@ -295,13 +293,3 @@ if __name__ == "__main__":
     print("IFS ready")
 
     print("******************************************READY******************************************")
-
-
-
-
-
-
-
-
-
-
