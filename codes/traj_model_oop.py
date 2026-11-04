@@ -2,15 +2,15 @@
 import cfgrib
 import numpy as np
 import xarray as xr
-#from scipy.integrate import solve_ivp
 from scipy.integrate import RK45
 from scipy.optimize import curve_fit
+from scipy.interpolate import RegularGridInterpolator
 #for plotting
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 
-class traj():
+class traj:
 
     def __init__(self, data_dir, model, init_date, lead_time, isobar):
         self.data_dir = data_dir
@@ -21,37 +21,61 @@ class traj():
 
         filepath = f"{self.data_dir}/ecmwf_{self.model}_{self.init_date}_0_RAPTOR_pl.grib"
         self.dataset = cfgrib.open_datasets(filepath)[0]
-        
-    def create_dataset(self, main_dir):
-        return cfgrib.open_datasets(f"{self.data_dir}/ecmwf_{self.model}_{self.init_date}_0_RAPTOR_pl.grib")
+
+        self._interp_cache = {} #cache for faster run
 
     #**********************************************************************************TRAJECTORY CALCULATIONS**************************************************************************************
-    def interpolate_spatially(self, coords, time, interpolation="linear"):
-        ds_slice = self.dataset.sel(isobaricInhPa=self.isobar, step=np.timedelta64(int(time), "h"))
+
+    def get_spatial_interpolators(self, time):
+        """Creates and stores the wind field interpolator for the given hour, so that it does not need to be created again"""
+        time = int(time)
+        if time not in self._interp_cache:
+            ds_slice = self.dataset.sel(isobaricInhPa=self.isobar, step=np.timedelta64(time, "h"))
+            lats = ds_slice["latitude"].values
+            lons = ds_slice["longitude"].values
+            u = ds_slice["u"].values
+            v = ds_slice["v"].values
+            
+            #coords have to be strictly increasing
+            if lats[0] > lats[-1]:
+                lats = lats[::-1]
+                u = u[::-1, :]
+                v = v[::-1, :]
+                
+            interp_u = RegularGridInterpolator((lats, lons), u, bounds_error=False, fill_value=None)
+            interp_v = RegularGridInterpolator((lats, lons), v, bounds_error=False, fill_value=None)
+            self._interp_cache[time] = (interp_u, interp_v)
+            
+        return self._interp_cache[time]
+
+
+    def interpolate_spatially(self, coords, time):
         lons = coords[0].copy()
         lats = coords[1].copy()
-        if ds_slice["longitude"].values.max() > 180 and np.any(lons < 0):
+        
+        if self.dataset["longitude"].values.max() > 180 and np.any(lons < 0):
             lons = np.where(lons < 0, lons + 360, lons)
-        u_interp = ds_slice["u"].interp({"longitude": xr.DataArray(lons, dims="points"), "latitude": xr.DataArray(lats, dims="points")}, method=interpolation)
-        v_interp = ds_slice["v"].interp({"longitude": xr.DataArray(lons, dims="points"), "latitude": xr.DataArray(lats, dims="points")}, method=interpolation)
-        return np.vstack([u_interp.values, v_interp.values])
+            
+        interp_u, interp_v = self.get_spatial_interpolators(time)
+        
+        # scipy expects column pairs: (lat, lon)
+        pts = np.column_stack((lats, lons))
+        u_vals = interp_u(pts)
+        v_vals = interp_v(pts)
+        
+        return np.vstack([u_vals, v_vals])
     
-    def interpolate_temporally(self, coords, time, interpolation="linear"):  #flexible 'time' variable is needed: RK'll use this method -> in spatial interpolation as well
-        #find neighboring 6-hourly steps
+    def interpolate_temporally(self, coords, time):
         t1 = int(np.floor(time / 6.0) * 6)
         t2 = t1 + 6
-        #if 'time' is a 6-hourly step exactly
         if np.isclose(time, t1):
             return self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
-        #fetch fields for lower and upper neighbor
         try:
             uv1 = self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
             uv2 = self.interpolate_spatially(coords, time=t2, interpolation=interpolation)
         except ValueError as e:
             raise ValueError(f"Cannot temporally interpolate to forecast hour {time}. Original error: {e}")
-        #calculate 'w' termporal weight factor (0 <= w <= 1)
         w = (time - t1) / (t2 - t1)
-        #execture linear temporal interpolation
         uv_interpolated = (1.0 - w) * uv1 + w * uv2
         return uv_interpolated
 
@@ -75,27 +99,23 @@ class traj():
         R = 6371000.0 # earth radius
         C = 180.0 / (np.pi * R) # conversion factor: from m to deg
         
-        # *************** HELPER METHODS *******************
-        
         def ode_func(t, y):
             N_current = len(y) // 2 
             lons = y[:N_current]
             lats = y[N_current:]
             coords = np.array([lons, lats])
             
-            try: #interpolate
-                uv = self.interpolate_temporally(coords, time=t/3600, interpolation="linear") 
+            try: 
+                uv = self.interpolate_temporally(coords, time=t/3600) 
             except Exception as e:
                 raise RuntimeError(f"Error evaluating wind at forecast hour {t}: {e}")
                 
             u = uv[0]
             v = uv[1]
             
-            #prevent division with 0
             lats_safe = np.clip(lats, -89.9, 89.9)
             cos_lat = np.cos(np.radians(lats_safe))
             
-            #derivatives in deg/s (instead of m/s)
             dlon_dt = (u * C) / cos_lat
             dlat_dt = v * C
             
@@ -154,10 +174,12 @@ class traj():
                         lons_updated, lats_updated = insert_new_particles(lons, lats, distances, dist_threshold)
                         y_current = np.concatenate([lons_updated, lats_updated])
                         
-                        print(f"[{t_current:.1f} s] New particle inserted: {N_current} -> {len(lons_updated)} particles")
+                        print(f"[{t_current:.1f} s simulation time] New particle inserted: {N_current} -> {len(lons_updated)} particles")
                         break
                 else: 
                     t_current = t_bound
+
+            return np.array(tlist), ylist
 
         
         y0 = np.concatenate([lon0, lat0]) 
@@ -251,25 +273,28 @@ class traj():
 
 #************************************************************************************************************************************************************************************************************************************
 
-#initialization
-lat_start = np.arange(45.0, 55.01, 0.005)
-lon_start = np.zeros(lat_start.shape) + 20
-init_date = 20260601
-lead_time = 168
-isobar = 500
-tstep = 60  # seconds timestep --> this is the output timestep! The internal integration timestep is automatically set by Runge-Kutta.
+if __name__ == "__main__":
+    lat_start = np.arange(45.0, 55.01, 0.05)
+    lon_start = np.zeros(lat_start.shape) + 20
+    init_date = 20260601
+    lead_time = 168
+    isobar = 500
 
-#derived things
-t_span = (0, lead_time*3600)
+    t_span = (0, lead_time*3600)
 
-#instantiation
-traj_aifs = traj("../RAPTOR/met", "aifs", init_date, lead_time, isobar)
-time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span)
-traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
+    print("starting AIFS simulation")
+    traj_aifs = traj("../RAPTOR/met", "aifs", init_date, lead_time, isobar)
+    time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span)
+    traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
+    print("AIFS ready")
 
-traj_ifs = traj("../RAPTOR/met", "ifs", init_date, lead_time, isobar)
-time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span)
-traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
+    print("starting IFS simulation")
+    traj_ifs = traj("../RAPTOR/met", "ifs", init_date, lead_time, isobar)
+    time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span)
+    traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
+    print("IFS ready")
+
+    print("******************************************READY******************************************")
 
 
 
