@@ -2,7 +2,9 @@
 import cfgrib
 import numpy as np
 import xarray as xr
-from scipy.integrate import solve_ivp
+#from scipy.integrate import solve_ivp
+from scipy.integrate import RK45
+from scipy.optimize import curve_fit
 #for plotting
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -23,118 +25,173 @@ class traj():
     def create_dataset(self, main_dir):
         return cfgrib.open_datasets(f"{self.data_dir}/ecmwf_{self.model}_{self.init_date}_0_RAPTOR_pl.grib")
 
+    #**********************************************************************************TRAJECTORY CALCULATIONS**************************************************************************************
     def interpolate_spatially(self, coords, time, interpolation="linear"):
-            
-        #slice the dataset
         ds_slice = self.dataset.sel(isobaricInhPa=self.isobar, step=np.timedelta64(int(time), "h"))
-
-        #extract coordinates & convert input longitudes from (-180, 180) to (0, 360) (dataset uses 0-360)
         lons = coords[0].copy()
         lats = coords[1].copy()
         if ds_slice["longitude"].values.max() > 180 and np.any(lons < 0):
             lons = np.where(lons < 0, lons + 360, lons)
-
-        #execute linear spatial interpolation
         u_interp = ds_slice["u"].interp({"longitude": xr.DataArray(lons, dims="points"), "latitude": xr.DataArray(lats, dims="points")}, method=interpolation)
         v_interp = ds_slice["v"].interp({"longitude": xr.DataArray(lons, dims="points"), "latitude": xr.DataArray(lats, dims="points")}, method=interpolation)
-
-        #return interpolated values
         return np.vstack([u_interp.values, v_interp.values])
-
-    def interpolate_temporally(self, coords, time, interpolation="linear"): #flexible 'time' variable is needed: RK'll use this method -> in spatial interpolation as well
-
+    
+    def interpolate_temporally(self, coords, time, interpolation="linear"):  #flexible 'time' variable is needed: RK'll use this method -> in spatial interpolation as well
         #find neighboring 6-hourly steps
         t1 = int(np.floor(time / 6.0) * 6)
         t2 = t1 + 6
-        
         #if 'time' is a 6-hourly step exactly
         if np.isclose(time, t1):
             return self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
-        
         #fetch fields for lower and upper neighbor
         try:
-            uv1 = self.interpolate_spatially(coords, self.isobar, time=t1, interpolation=interpolation)
-            uv2 = self.interpolate_spatially(coords, self.isobar, time=t2, interpolation=interpolation)
-          except ValueError as e:
-            raise ValueError(f"Cannot temporally interpolate to forecast hour {time}. Ensure both steps {t1} and {t2} exist in the file. Original error: {e}")
-        
+            uv1 = self.interpolate_spatially(coords, time=t1, interpolation=interpolation)
+            uv2 = self.interpolate_spatially(coords, time=t2, interpolation=interpolation)
+        except ValueError as e:
+            raise ValueError(f"Cannot temporally interpolate to forecast hour {time}. Original error: {e}")
         #calculate 'w' termporal weight factor (0 <= w <= 1)
         w = (time - t1) / (t2 - t1)
-
         #execture linear temporal interpolation
         uv_interpolated = (1.0 - w) * uv1 + w * uv2
-
-        #return
         return uv_interpolated
+
+    def haversine(self, lon1, lat1, lon2, lat2):
+        lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
+        dlon = lon2 - lon1 
+        dlat = lat2 - lat1 
+        a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
+        c = 2 * np.arcsin(np.sqrt(a)) 
+        return 6371000 * c
+        
 
     def calculate_trajectory(self, lon0, lat0, t_span, t_eval=None):
         lon0 = np.atleast_1d(lon0)
         lat0 = np.atleast_1d(lat0)
-        N = len(lon0)
-
-        if len(lat0) != N:
+        N_initial = len(lon0)
+        
+        if len(lat0) != N_initial:
             raise ValueError("lon0 and lat0 must have the same length.")
-
-        R = 6371000.0 #earth radius in meters
-        C = 180.0 / (np.pi * R) #conversion factor: from m to deg
-
-        def ode_func(t, y):
-            # y contains [lon_1, ..., lon_N, lat_1, ..., lat_N]
-            lons = y[:N]
-            lats = y[N:]
             
-            #construct coords array
+        R = 6371000.0 # earth radius
+        C = 180.0 / (np.pi * R) # conversion factor: from m to deg
+        
+        # *************** HELPER METHODS *******************
+        
+        def ode_func(t, y):
+            N_current = len(y) // 2 
+            lons = y[:N_current]
+            lats = y[N_current:]
             coords = np.array([lons, lats])
-
-            #interpolate
-            try:
-              uv = self.interpolate_temporally(coords, time=t/3600, interpolation="linear") 
+            
+            try: #interpolate
+                uv = self.interpolate_temporally(coords, time=t/3600, interpolation="linear") 
             except Exception as e:
-              raise RuntimeError(f"Error evaluating wind at forecast hour {t}: {e}")
-
-            #extract u and v
+                raise RuntimeError(f"Error evaluating wind at forecast hour {t}: {e}")
+                
             u = uv[0]
             v = uv[1]
-
+            
             #prevent division with 0
             lats_safe = np.clip(lats, -89.9, 89.9)
             cos_lat = np.cos(np.radians(lats_safe))
-
+            
             #derivatives in deg/s (instead of m/s)
             dlon_dt = (u * C) / cos_lat
             dlat_dt = v * C
-
+            
             return np.concatenate([dlon_dt, dlat_dt])
+            
+        def calc_dists(lons, lats):
+            lon1 = lons[:-1]
+            lat1 = lats[:-1]
+            lon2 = lons[1:]
+            lat2 = lats[1:]
+            return self.haversine(lon1, lat1, lon2, lat2)
+            
+        def insert_new_particles(lons, lats, distances, threshold):
+            new_lons = [lons[0]]
+            new_lats = [lats[0]]
+            
+            for i in range(len(distances)):
+                if distances[i] > threshold:
+                    mid_lon = (lons[i] + lons[i+1]) / 2.0
+                    mid_lat = (lats[i] + lats[i+1]) / 2.0
+                    new_lons.append(mid_lon)
+                    new_lats.append(mid_lat)
+                    
+                new_lons.append(lons[i+1])
+                new_lats.append(lats[i+1])
+                
+            return np.array(new_lons), np.array(new_lats)
+            
+        def integrater(ode_f, t0, y0, t_bound, dist_threshold):
+            tlist = []
+            ylist = []
+            
+            t_current = t0
+            y_current = y0
+            
+            tlist.append(t_current)
+            ylist.append(y_current.copy())
+            
+            while t_current < t_bound:
+                rk45 = RK45(ode_f, t_current, y_current, t_bound, max_step=600.0, atol=1e-3, rtol=1e-3)
+                
+                while rk45.status == 'running':
+                    rk45.step()
+                    
+                    tlist.append(rk45.t)
+                    ylist.append(rk45.y.copy())
+                    
+                    N_current = len(rk45.y) // 2
+                    lons = rk45.y[:N_current]
+                    lats = rk45.y[N_current:]
+                    
+                    distances = calc_dists(lons, lats)
+                    
+                    if np.any(distances > dist_threshold):
+                        t_current = rk45.t
+                        lons_updated, lats_updated = insert_new_particles(lons, lats, distances, dist_threshold)
+                        y_current = np.concatenate([lons_updated, lats_updated])
+                        
+                        print(f"[{t_current:.1f} s] New particle inserted: {N_current} -> {len(lons_updated)} particles")
+                        break
+                else: 
+                    t_current = t_bound
 
-        #initial state vector
-        y0 = np.concatenate([lon0, lat0])
-
-        #solve ODE
-        solution = solve_ivp(ode_func, t_span, y0, method="RK45", t_eval=t_eval, rtol=1e-3, atol=1e-3, max_step=600.0)  #shape of solution: (number_of_particles, num_time_steps)
-
-        #save solution
-        np.savez_compressed(f"./traj_sols/trajectory_solution_{self.lead_time}h_500m_{self.isobar}hPa_{self.model}.npz", t=solution.t, y=solution.y)
-
-        #extract solutions
-        N = len(lon0)
-        time = solution.t
-        particle_lons = solution.y[:N, :]  # Shape: (N, len(time))
-        particle_lats = solution.y[N:, :]
         
-        #return
-        return solution, time, particle_lons, particle_lats
+            y0 = np.concatenate([lon0, lat0]) 
+            t_start = t_span[0]
+            t_final = t_span[1]
+            threshold_meters = 10000.0 
 
-    def plot(self, sol, lon0=None, lat0=None,outpath=''):
+            time_arr, y_list_of_arrays = integrater(ode_func, t_start, y0, t_final, threshold_meters)
+            
+            particle_lons_list = []
+            particle_lats_list = []
+
+            for y_state in y_list_of_arrays:
+                N_step = len(y_state) // 2
+                particle_lons_list.append(y_state[:N_step])
+                particle_lats_list.append(y_state[N_step:])
+
+            y_obj_array = np.empty(len(y_list_of_arrays), dtype=object)
+            y_obj_array[:] = y_list_of_arrays
+            
+            np.savez_compressed(f"./traj_sols/trajectory_solution_{self.lead_time}h_500m_{self.isobar}hPa_{self.model}.npz", t=time_arr, y=y_obj_array)
+  
+            return time_arr, particle_lons_list, particle_lats_list
+
+    def plot_traj(self, time_arr, lons_list, lats_list, outpath=''):
 
         #solution lats & lons
-        N = sol.y.shape[0] // 2
-        lons = sol.y[:N, :] 
-        lats = sol.y[N:, :]
+        all_lons = np.concatenate(lons_list)
+        all_lats = np.concatenate(lats_list)
 
         #calculate map extent (1-deg buffer)
-        min_lon, max_lon = lons.min() - 1.0, lons.max() + 1.0
-        min_lat, max_lat = lats.min() - 1.0, lats.max() + 1.0
-
+        min_lon, max_lon = all_lons.min() - 1.0, all_lons.max() + 1.0
+        min_lat, max_lat = all_lats.min() - 1.0, all_lats.max() + 1.0
+        
         #setup fig
         fig, ax = plt.subplots(figsize=(10, 8), subplot_kw={"projection": ccrs.PlateCarree()})
         ax.set_extent([min_lon, max_lon, min_lat, max_lat], crs=ccrs.PlateCarree())
@@ -150,18 +207,47 @@ class traj():
         gl.top_labels = False
         gl.right_labels = False
 
-        #plot every particle's path AND start/end points (Javítva: ciklusba illesztve)
-        for i in range(N):
-            ax.plot(lons[i], lats[i], transform=ccrs.PlateCarree(), linewidth=1.8, alpha=0.8, zorder=3)
-            ax.plot(lons[i, 0], lats[i, 0], marker="o", color="green", markersize=5, transform=ccrs.PlateCarree(), zorder=4)
-            ax.plot(lons[i, -1], lats[i, -1], marker="o", color="crimson", markersize=5, transform=ccrs.PlateCarree(), zorder=4)
-
+        #plot yarn path and start/end points
+        ax.plot(lons_list[0], lats_list[0], transform=ccrs.PlateCarree(), color="green", linewidth=2, label="Kezdeti fonal")
+        ax.scatter(lons_list[0], lats_list[0], transform=ccrs.PlateCarree(), color="darkgreen", s=10, zorder=5)
+        ax.plot(lons_list[-1], lats_list[-1], transform=ccrs.PlateCarree(), color="crimson", linewidth=2, label="Végső fonal")
+        ax.scatter(lons_list[-1], lats_list[-1], transform=ccrs.PlateCarree(), color="darkred", s=10, zorder=5)
+        ax.legend()
         #title & save
         ax.set_title(f"Részecske trajektóriák (ECMWF-{self.model.upper()}, 0.005°, {self.isobar} hPa, {self.lead_time} h)\n Zöld: kiindulópont, piros: végpont", fontsize=12, fontweight="bold", pad=10)
         plt.tight_layout()
         plt.savefig(f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}.png",dpi=300)
         plt.close()
 
+    #**********************************************************************************TOPOLOGICAL ENTROPY CALCULATIONS**************************************************************************************
+
+    def calc_yarn_length(self, lons_list, lats_list):    
+        lengths = []
+        for lons, lats in zip(lons_list, lats_list):
+            if len(lons) < 2:
+                lengths.append(0.0)
+                continue
+            lon1, lat1 = lons[:-1], lats[:-1]
+            lon2, lat2 = lons[1:], lats[1:]
+            segment_distances = self.haversine(lon1, lat1, lon2, lat2)
+            lengths.append(np.sum(segment_distances))
+            
+        return np.array(lengths)
+    
+    def fit_topo_entr(self, lon_start, lat_start, t_span):
+        def linear(x, a, b):
+            return a*x + b
+        
+        time, particle_lons, particle_lats = self.calculate_trajectory(lon_start, lat_start, t_span)
+        time_hr = time / 3600.0
+        
+        length = self.calc_yarn_length(particle_lons, particle_lats)
+
+        mask = (time_hr >= 90) & (time_hr <= 150)
+        popt, pcov = curve_fit(linear, time_hr[mask], np.log(length[mask]))
+        perr = np.sqrt(np.diag(pcov))
+
+        return popt[0]
 
 #************************************************************************************************************************************************************************************************************************************
 
@@ -179,12 +265,13 @@ t_eval = np.arange(0, lead_time*3600, tstep)
 
 #instantiation
 traj_aifs = traj("../RAPTOR/met", "aifs", init_date, lead_time, isobar)
-sim_aifs, time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
-traj_aifs.plot(sim_aifs)
+time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
+traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
 
 traj_ifs = traj("../RAPTOR/met", "ifs", init_date, lead_time, isobar)
-sim_ifs, time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
-traj_ifs.plot(sim_ifs)
+time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span, t_eval=t_eval)
+traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
+
 
 
 
