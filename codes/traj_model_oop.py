@@ -160,14 +160,20 @@ class traj:
             tlist.append(t_current)
             ylist.append(y_current.copy())
             
+            last_saved_t = t_current
+            save_interval = 3600.0  # higher save_interval for faster run
+            
             while t_current < t_bound:
                 rk45 = RK45(ode_f, t_current, y_current, t_bound, max_step=600.0, atol=1e-3, rtol=1e-3)
                 
                 while rk45.status == 'running':
                     rk45.step()
                     
-                    tlist.append(rk45.t)
-                    ylist.append(rk45.y.copy())
+                    # memory protection (ran into OOM - until now every step was saved & ifs exploded - 20261105)
+                    if (rk45.t - last_saved_t) >= save_interval or rk45.t >= t_bound:
+                        tlist.append(rk45.t)
+                        ylist.append(rk45.y.copy())
+                        last_saved_t = rk45.t
                     
                     N_current = len(rk45.y) // 2
                     lons = rk45.y[:N_current]
@@ -181,6 +187,11 @@ class traj:
                         y_current = np.concatenate([lons_updated, lats_updated])
                         
                         print(f"[{t_current:.1f} s simulation time] New particle inserted: {N_current} -> {len(lons_updated)} particles")
+                        
+                        tlist.append(t_current)
+                        ylist.append(y_current.copy())
+                        last_saved_t = t_current
+                        
                         break
                 else: 
                     t_current = t_bound
@@ -191,25 +202,21 @@ class traj:
         y0 = np.concatenate([lon0, lat0]) 
         t_start = t_span[0]
         t_final = t_span[1]
-        threshold_meters = 10000.0 
+        
+        threshold_meters = 20000.0 
 
         time_arr, y_list_of_arrays = integrater(ode_func, t_start, y0, t_final, threshold_meters)
+
+        particle_lons = []
+        particle_lats = []
+        
+        for y in y_list_of_arrays:
+            N = len(y) // 2
+            particle_lons.append(y[:N])
+            particle_lats.append(y[N:])
             
-        particle_lons_list = []
-        particle_lats_list = []
-
-        for y_state in y_list_of_arrays:
-            N_step = len(y_state) // 2
-            particle_lons_list.append(y_state[:N_step])
-            particle_lats_list.append(y_state[N_step:])
-
-        y_obj_array = np.empty(len(y_list_of_arrays), dtype=object)
-        y_obj_array[:] = y_list_of_arrays
-            
-        np.savez_compressed(f"./traj_sols/trajectory_solution_{self.lead_time}h_500m_{self.isobar}hPa_{self.model}.npz", t=time_arr, y=y_obj_array)  
-
-        return time_arr, particle_lons_list, particle_lats_list
-
+        return time_arr, particle_lons, particle_lats
+        
     def plot_traj(self, time_arr, lons_list, lats_list, outpath=''):
 
         #solution lats & lons
@@ -247,35 +254,6 @@ class traj:
         plt.savefig(f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}.png",dpi=300)
         plt.close()
 
-    #**********************************************************************************TOPOLOGICAL ENTROPY CALCULATIONS**************************************************************************************
-
-    def calc_yarn_length(self, lons_list, lats_list):   
-        lengths = []
-        for lons, lats in zip(lons_list, lats_list):
-            if len(lons) < 2:
-                lengths.append(0.0)
-                continue
-            lon1, lat1 = lons[:-1], lats[:-1]
-            lon2, lat2 = lons[1:], lats[1:]
-            segment_distances = self.haversine(lon1, lat1, lon2, lat2)
-            lengths.append(np.sum(segment_distances))
-            
-        return np.array(lengths)
-    
-    def fit_topo_entr(self, lon_start, lat_start, t_span):
-        def linear(x, a, b):
-            return a*x + b
-        
-        time, particle_lons, particle_lats = self.calculate_trajectory(lon_start, lat_start, t_span)
-        time_hr = time / 3600.0
-        
-        length = self.calc_yarn_length(particle_lons, particle_lats)
-
-        mask = (time_hr >= 90) & (time_hr <= 150)
-        popt, pcov = curve_fit(linear, time_hr[mask], np.log(length[mask]))
-        perr = np.sqrt(np.diag(pcov))
-
-        return popt[0]
 
 #************************************************************************************************************************************************************************************************************************************
 
