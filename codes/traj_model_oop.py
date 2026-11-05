@@ -1,15 +1,16 @@
 #restrict number of used CPUs
 import os
-os.environ["OMP_NUM_THREADS"] = "4"
-os.environ["OPENBLAS_NUM_THREADS"] = "4"
-os.environ["MKL_NUM_THREADS"] = "4"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "4"
-os.environ["NUMEXPR_NUM_THREADS"] = "4"
+os.environ["OMP_NUM_THREADS"] = "5"
+os.environ["OPENBLAS_NUM_THREADS"] = "5"
+os.environ["MKL_NUM_THREADS"] = "5"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "5"
+os.environ["NUMEXPR_NUM_THREADS"] = "5"
 
 #for data processing
 import cfgrib
 import numpy as np
 import xarray as xr
+import time
 from scipy.integrate import RK45
 from scipy.optimize import curve_fit
 from scipy.interpolate import RegularGridInterpolator
@@ -169,7 +170,7 @@ class traj:
                 while rk45.status == 'running':
                     rk45.step()
                     
-                    # memory protection (ran into OOM - until now every step was saved & ifs exploded - 20261105)
+                    # memory protection
                     if (rk45.t - last_saved_t) >= save_interval or rk45.t >= t_bound:
                         tlist.append(rk45.t)
                         ylist.append(rk45.y.copy())
@@ -187,11 +188,6 @@ class traj:
                         y_current = np.concatenate([lons_updated, lats_updated])
                         
                         print(f"[{t_current:.1f} s simulation time] New particle inserted: {N_current} -> {len(lons_updated)} particles")
-                        
-                        tlist.append(t_current)
-                        ylist.append(y_current.copy())
-                        last_saved_t = t_current
-                        
                         break
                 else: 
                     t_current = t_bound
@@ -248,12 +244,14 @@ class traj:
         ax.plot(lons_list[-1], lats_list[-1], transform=ccrs.PlateCarree(), color="crimson", linewidth=2, label="Végső fonal")
         ax.scatter(lons_list[-1], lats_list[-1], transform=ccrs.PlateCarree(), color="darkred", s=10, zorder=5)
         ax.legend()
+        
         #title & save
         ax.set_title(f"Részecske trajektóriák (ECMWF-{self.model.upper()}, 0.005°, {self.isobar} hPa, {self.lead_time} h)\n Zöld: kiindulópont, piros: végpont", fontsize=12, fontweight="bold", pad=10)
         plt.tight_layout()
-        plt.savefig(f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}.png",dpi=300)
+        img_filename = f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}.png"
+        plt.savefig(img_filename, dpi=300)
         plt.close()
-
+        return img_filename
 
 #************************************************************************************************************************************************************************************************************************************
 
@@ -266,16 +264,49 @@ if __name__ == "__main__":
 
     t_span = (0, lead_time*3600)
 
-    print("starting AIFS simulation")
+    # --- AIFS SIMULATION ---
+    print("\n" + "="*50)
+    print("STARTING AIFS SIMULATION")
+    print("="*50)
+    start_time_aifs = time.time()
+    
     traj_aifs = traj("../RAPTOR/met", "aifs", init_date, lead_time, isobar)
     time_aifs, particle_lons_aifs, particle_lats_aifs = traj_aifs.calculate_trajectory(lon_start, lat_start, t_span)
-    traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
-    print("AIFS ready")
+    
+    img_file_aifs = traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
+    
+    npz_file_aifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_aifs.npz"
+    np.savez_compressed(npz_file_aifs, time=time_aifs, lons=np.array(particle_lons_aifs, dtype=object), lats=np.array(particle_lats_aifs, dtype=object))
+    
+    end_time_aifs = time.time()
+    run_time_aifs = end_time_aifs - start_time_aifs
+    
+    print(f"\n[AIFS READY]")
+    print(f"Run time: ({run_time_aifs/60:.2f} minutes)")
+    print(f"Saved figure: {img_file_aifs}")
+    print(f"Saved .npz data: {npz_file_aifs}")
 
-    print("starting IFS simulation")
+
+    # --- IFS SIMULATION ---
+    print("\n" + "="*50)
+    print("STARTING IFS SIMULATION")
+    print("="*50)
+    start_time_ifs = time.time()
+    
     traj_ifs = traj("../RAPTOR/met", "ifs", init_date, lead_time, isobar)
     time_ifs, particle_lons_ifs, particle_lats_ifs = traj_ifs.calculate_trajectory(lon_start, lat_start, t_span)
-    traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
-    print("IFS ready")
+    
+    img_file_ifs = traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
+    
+    npz_file_ifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_ifs.npz"
+    np.savez_compressed(npz_file_ifs, time=time_ifs, lons=np.array(particle_lons_ifs, dtype=object), lats=np.array(particle_lats_ifs, dtype=object))
+    
+    end_time_ifs = time.time()
+    run_time_ifs = end_time_ifs - start_time_ifs
+    
+    print(f"\n[IFS READY]")
+    print(f"Run time: ({run_time_ifs/60:.2f} minutes)")
+    print(f"Saved figure: {img_file_ifs}")
+    print(f"Saved .npz data: {npz_file_ifs}")
 
-    print("******************************************READY******************************************")
+    print("\n****************************************** ALL READY ******************************************")
