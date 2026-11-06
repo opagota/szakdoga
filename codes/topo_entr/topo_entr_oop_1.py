@@ -5,13 +5,14 @@ import matplotlib.pyplot as plt
 import os
 
 class YarnEntropyPlotter:
-    def __init__(self, isobar, model, lead_time=168):
+    def __init__(self, isobar, model, init_date, lead_time=168):
         self.isobar = isobar
         self.model = model
+        self.init_date = init_date
         self.lead_time = lead_time
 
     def load_npz(self):
-        filepath = f"../traj_sols/trajectory_solution_{self.lead_time}h_{self.isobar}hPa_{self.model}.npz"
+        filepath = f"../traj_sols/trajectory_solution_{self.lead_time}h_{self.isobar}hPa_{self.init_date}_{self.model}.npz"
         
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"File not found: {filepath}")
@@ -81,7 +82,7 @@ class YarnEntropyPlotter:
         
         plt.tight_layout()
         
-        save_path = f"yarn_length_fit_{self.model}_{self.isobar}hPa.png"
+        save_path = f"yarn_length_fit_{self.model}_{self.isobar}hPa_{self.init_date}.png"
         plt.savefig(save_path, dpi=300)
         print(f"Graph saved: {save_path}\n")
         
@@ -89,9 +90,10 @@ class YarnEntropyPlotter:
 
 #####################################################################################
 if __name__ == "__main__":
-    SELECTED_MODEL = "aifs"
+    SELECTED_MODEL = "ifs"
     SELECTED_ISOBAR = 500
+    INIT_DATE = 20260701
     LEAD_TIME_HR = 168
 
-    analyzer = YarnEntropyPlotter(isobar=SELECTED_ISOBAR, model=SELECTED_MODEL, lead_time=LEAD_TIME_HR)
+    analyzer = YarnEntropyPlotter(isobar=SELECTED_ISOBAR, model=SELECTED_MODEL, init_date=INIT_DATE, lead_time=LEAD_TIME_HR)
     analyzer.plot_and_fit(fit_range=(90, 150))
