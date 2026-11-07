@@ -258,6 +258,7 @@ class traj:
 if __name__ == "__main__":
     lat_start = np.arange(45.0, 55.01, 0.05)
     lon_start = np.zeros(lat_start.shape) + 20
+    #lon_start = np.zeros(lat_start.shape) + 60
     init_date = 20260601
     lead_time = 6
     isobar = 500
