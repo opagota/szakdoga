@@ -53,7 +53,7 @@
 \section{Bevezetés}
 
 \subsection{Célkitűzés}
-A huszadik század eleje óta -- többek között a ,,bergeni iskola" neves kutatóinak köszönhetően -- ismerjük a légkör működését leíró nemlineáris egyenletrendszert, az úgynevezett kormányzó egyenleteket. Az időjárás-előrejelzés hagyományosan ezen egyenletrendszer integrálásán alapul, melyet szuperszámítógépeken futó numerikus modellek hajtanak végre (\textit{Numerical Weather Prediction, NWP}). Az utóbbi években jelentős áttörés történt az időjárás-előrejelzés területén: a 2020-as évek elején megjelentek a gépi tanulás alapú időjárás-előrejelző modellek (\textit{Machine Learning-based Weather Prediction, MLWP}). A gépi tanulás alapú modellek rekonstruált historikus időjárási adatokból -- úgynevezett reanalízis adatokból --, illetve operatív NWP-előrejelzésekből tanulják meg a légköri folyamatok mintázatait, és ezáltal képesek a kiinduló adatok -- a peremfeltételek -- ismeretében predikciót adni a jövő várható időjárására. Az eltérő megközelítés folytán több előny és hátrány is megjelenik a hagyományos NWP-modellekhez képest.
+A huszadik század eleje óta -- többek között a ,,bergeni iskola" neves kutatóinak köszönhetően -- ismerjük a légkör működését leíró nemlineáris egyenletrendszert, az úgynevezett kormányzó egyenleteket. Az időjárás-előrejelzés hagyományosan ezen egyenletrendszer integrálásán alapul, melyet szuperszámítógépeken futó numerikus modellek hajtanak végre (\textit{Numerical Weather Prediction, NWP}). Az utóbbi években jelentős áttörés történt az időjárás-előrejelzés területén: a 2020-as évek elején megjelentek a gépi tanulás alapú időjárás-előrejelző modellek (\textit{Machine Learning Weather Prediction, MLWP}). A gépi tanulás alapú modellek rekonstruált historikus időjárási adatokból -- úgynevezett reanalízis adatokból --, illetve operatív NWP-előrejelzésekből tanulják meg a légköri folyamatok mintázatait, és ezáltal képesek a kiinduló adatok -- a peremfeltételek -- ismeretében predikciót adni a jövő várható időjárására. Az eltérő megközelítés folytán több előny és hátrány is megjelenik a hagyományos NWP-modellekhez képest.
 
 Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető \cite{pathak_fourcastnet_2022}. A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023; Google GraphCast, 2023; FuXi, 2023; FengWu, 2023; ECMWF-AIFS, 2024; illetve néhány ensemble modell: Google GenCast, 2024; ECMWF AIFS ENS, 2025), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
 
@@ -345,13 +345,26 @@ ahol $(\varphi_1, \lambda_1)$ és $(\varphi_2, \lambda_2)$ a két részecske koo
 A trajektóriamodell futtatása 8 magos (16 szálas) AMD Ryzen 7 2700X processzor alapú számítógépen történt. A részecskebeszúrást végző metódussal ellátott modell jelentősen megnövekedett lineáris algebrai számítási terhelést jelentett a részecskék megugró száma miatt. A futási időt a NumPy által támogatott többszálú végrehajtás engedélyezésével csökkentettem.
 
 \subsection{Kaotikus viselkedés számszerűsítése}
-A modellezett trajektóriák felhasználásával topologikus entrópiát számoltam. Ehhez a szimuláció minden időlépésében szükséges kiszámolni a részecskéket képzeletben összekötő, egyre bonyolultabb alakot felvevő fonal hosszát. Ez úgy tehető meg, hogy az adott időlépésben a részecskék koordinátáinak ismeretében kiszámolom, milyen messze vannak egymástól a szomszédos részecskék, és ezeket a távolságokat összeadom. Ha a részecskék elég sűrűen helyezkednek el, ezzel a módszerrel viszonylag pontosan megkapható a fonal megnyúlásának időfüggése, a kapott adatokra való illesztéssel pedig egyszerűen meghatározható a $h$ topologikus entrópia. 
+A modellezett trajektóriák felhasználásával topologikus entrópiát számoltam. Ehhez a szimuláció minden időlépésében szükséges kiszámolni a részecskéket képzeletben összekötő, egyre bonyolultabb alakot felvevő fonal hosszát. Ez úgy tehető meg, hogy az adott időlépésben a részecskék koordinátáinak ismeretében kiszámolom, milyen messze vannak egymástól a szomszédos részecskék, és ezeket a távolságokat összeadom. Ha a részecskék elég sűrűen helyezkednek el, ezzel a módszerrel viszonylag pontosan megkapható a fonal megnyúlásának időfüggése, a kapott adatokra való illesztéssel pedig egyszerűen meghatározható a $h$ topologikus entrópia. Az elég sűrű elhelyezkedést 20 km-es távolságküszöbbel dinamikus részecskebeszúrással biztosítottam.
 
-A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A részecskéket ezért egymástól $0,005 ^\circ$-ra indítottam, ami kb. 500 m-t jelent. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
+A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A részecskéket számítási kapacitásokat figyelembe véve egymástól $0,05 ^\circ$-ra indítottam, ami kb. 5,4 km-t jelent. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
 
 A fonal hosszát szemilogaritmikus diagramon ábrázolva az idő függvényében egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát.
 
 \section{Eredmények}
+A modellt ECMWF-IFS, illetve ECMWF-AIFS szélelőrejelzésekkel is meghajtottam.A vizsgálatokat több izobárszinten (850, 700, 500 hPa) végeztem, 168 órás előrejelzési időtávra. Az előrejelzési időtáv megválasztása azért történt így, mert ez már elég hosszú idő ahhoz, hogy reprezentatív lenyomatot kaphassunk a légkör folyamatairól. Emellett elég rövid ahhoz, hogy a szimulációknak -- a jelentősen megnövekvő részecskeszám miatt -- ne teljen túl sok időbe lefutniuk. 
+
+A felhasznált ECMWF-előrejelzések az ECMWF-AIFS legújabb verziója, a 2026. május 12-én megjelent AIFS v2
+
+2026. június 1-jén, augusztus 1-jén, szeptember 1-jén, illetve október 1-jén készültek 15 napos időtávra előre. A dátumválasztások legfőbb oka,
+
+\subsection{}
+
+
+\subsection{Szimulációs idők összehasonlítása}
+
+
+
 
 
 

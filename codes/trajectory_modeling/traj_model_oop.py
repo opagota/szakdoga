@@ -1,10 +1,10 @@
 #restrict number of used CPUs
 import os
-os.environ["OMP_NUM_THREADS"] = "5"
-os.environ["OPENBLAS_NUM_THREADS"] = "5"
-os.environ["MKL_NUM_THREADS"] = "5"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "5"
-os.environ["NUMEXPR_NUM_THREADS"] = "5"
+os.environ["OMP_NUM_THREADS"] = "8"
+os.environ["OPENBLAS_NUM_THREADS"] = "8"
+os.environ["MKL_NUM_THREADS"] = "8"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "8"
+os.environ["NUMEXPR_NUM_THREADS"] = "8"
 
 #for data processing
 import cfgrib
@@ -21,12 +21,13 @@ import matplotlib.pyplot as plt
 
 class traj:
 
-    def __init__(self, data_dir, model, init_date, lead_time, isobar):
+    def __init__(self, data_dir, model, init_date, lead_time, isobar, spat_res):
         self.data_dir = data_dir
         self.model = model
         self.init_date = init_date
         self.lead_time = lead_time #between 0 and 360 h
         self.isobar = isobar
+	self.spat_res = spat_res
 
         filepath = f"{self.data_dir}/ecmwf_{self.model}_{self.init_date}_0_RAPTOR_pl.grib"
         self.dataset = cfgrib.open_datasets(filepath)[0]
@@ -246,9 +247,9 @@ class traj:
         ax.legend()
         
         #title & save
-        ax.set_title(f"Részecske trajektóriák (ECMWF-{self.model.upper()}, 0.005°, {self.isobar} hPa, {self.lead_time} h)\n Zöld: kiindulópont, piros: végpont", fontsize=12, fontweight="bold", pad=10)
+        ax.set_title(f"Részecske trajektóriák (ECMWF-{self.model.upper()}, {self.spat_res}°, {self.isobar} hPa, {self.lead_time} h)", fontsize=12, fontweight="bold", pad=10)
         plt.tight_layout()
-        img_filename = f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}.png"
+        img_filename = f"trajs_{self.isobar}hPa_{self.lead_time}h_{self.model}_{self.init_date}_{self.spat_res.replace('.', '')}.png"
         plt.savefig(img_filename, dpi=300)
         plt.close()
         return img_filename
@@ -256,12 +257,15 @@ class traj:
 #************************************************************************************************************************************************************************************************************************************
 
 if __name__ == "__main__":
-    lat_start = np.arange(45.0, 55.01, 0.05)
-    lon_start = np.zeros(lat_start.shape) + 20
-    #lon_start = np.zeros(lat_start.shape) + 60
-    init_date = 20260601
-    lead_time = 6
+    init_date = 20260701
+    lead_time = 168
     isobar = 500
+    spat_res = 0.005
+
+    lat_start = np.arange(45.0, 55.01, spat_res)
+    lon_start = np.zeros(lat_start.shape) + 20
+    #lon_start = np.zeros(lat_start.shape) + 60 #above Asian continent
+
 
     t_span = (0, lead_time*3600)
 
@@ -276,7 +280,7 @@ if __name__ == "__main__":
     
     img_file_aifs = traj_aifs.plot_traj(time_aifs, particle_lons_aifs, particle_lats_aifs)
     
-    npz_file_aifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_aifs.npz"
+    npz_file_aifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_{init_date}_aifs_{spat_res.replace('.', '')}.npz"
     np.savez_compressed(npz_file_aifs, time=time_aifs, lons=np.array(particle_lons_aifs, dtype=object), lats=np.array(particle_lats_aifs, dtype=object))
     
     end_time_aifs = time.time()
@@ -299,7 +303,7 @@ if __name__ == "__main__":
     
     img_file_ifs = traj_ifs.plot_traj(time_ifs, particle_lons_ifs, particle_lats_ifs)
     
-    npz_file_ifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_ifs.npz"
+    npz_file_ifs = f"trajectory_solution_{lead_time}h_{isobar}hPa_{init_date}_ifs_{spat_res.replace('.', '')}.npz"
     np.savez_compressed(npz_file_ifs, time=time_ifs, lons=np.array(particle_lons_ifs, dtype=object), lats=np.array(particle_lats_ifs, dtype=object))
     
     end_time_ifs = time.time()
