@@ -365,7 +365,7 @@ A modellezett trajektóriák felhasználásával topologikus entrópiát számol
 
 A rendelkezésre álló adatok $0,25^\circ \times 0,25^\circ$ felbontásúak, ami kb. 27 km $\times$ 27 km-es felbontást jelent. Ez trajektóriák modellezésekor meglehetősen durva felbontásnak számít, a szakirodalomban ennél jóval finomabb felbontást -- pl. 300-600 m -- használnak \cite{haszpra_ensemble-based_2019}. A részecskéket egymástól $0,005 ^\circ$-ra indítottam, ami kb. 540 m-t jelent. Tizedekkora felbontáson ($0,05^\circ \times 0,05^\circ$) nem volt jelentős szimulációs idő csökkenés, így maradtam a finomabb felbontásnál. A modell minden lépésben térbeli lineáris interpolációval határozza meg a szélsebességet a részecskék pillanatnyi pozíciójában.
 
-A fonal hosszát szemilogaritmikus diagramon ábrázolva az idő függvényében egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát. A paraméter bizonytalanságát 95\%-os konfidencia-intervallummal adtam meg.
+A fonal hosszát szemilogaritmikus diagramon ábrázolva az idő függvényében egy egyenes illesztésével, az egyenes meredekségeként lehet meghatározni a topologikus entrópiát. A paraméter bizonytalanságát 95\%-os konfidencia-intervallummal adtam meg, melyet (mivel nem ismerjük a teljes sokaság -- a légköri fonalhosszak -- elméleti szórását, és a mintaszám is viszonylag kicsi -- az illesztési ablak átlagosan 55 óra, és mivel óránként mentettem el a részecskék helyzetét, ez kb. csak 55 adatpontot jelent) t-eloszlás alapján számoltam.
 
 \section{Eredmények}
 A kapott eredményeket a vizsgált földrajzi régiókra bontva fogom bemutatni. Először a fonalalak-változás kvalitatív vizsgálatával, majd a topologikus entrópia számolásokat is bemutatva.
@@ -996,12 +996,13 @@ A július 1., szeptember 1., illetve október 1. kezdetű szélelőrejelzések a
     \caption{A fonal kezdeti (zöld), illetve a szimuláció 168. órájában felvett alakja (piros). Mindegyik ábrán felül az AIFS, alul az IFS előrejelzése látható.}
     \label{fig:trade500_traj}
 \end{figure}
-Észrevehető a korábban tapasztaltakhoz képest mindkét modell esetében a rövidebb, egyszerűbb alakú fonal, melynek hátterében a passzátszelek ,,egyszerűsége" állhat. Az AIFS IFS-éhez képesti ,,kisimítottabb" fonala itt is megfigyelhető.
+Észrevehető a korábban tapasztaltakhoz képest mindkét modell esetében a rövidebb, egyszerűbb alakú fonal, melynek hátterében a passzátszelek ,,egyszerűsége" állhat. Az AIFS IFS-éhez képesti ,,kisimítottabb" fonala itt is megfigyelhető. Az októberi IFS futás szerint a részecskék a Himaláját is elérték, melynek magassága az 500 hPa-os szintet is eléri, így ott a fonal bonyolulabb alakot vett fel.
 
 Az illesztéseket, illetve számszerűsítésüket a \ref{tab:trade500_top}. táblázat, illetve \ref{fig:trade500_top}. ábra mutatja be.
 
 \begin{table}[H]
     \centering
+    \small
     \begin{subtable}{\textwidth}
         \centering
         \begin{tabular}{|c|c|c|c|c|c|}\hline
@@ -1071,7 +1072,9 @@ A most kapott ábrákon az előzőektől jelentősen eltérő eredmények figyel
 
 A júliusi előrejelzésben erős hullámzás figyelhető meg, azonban érdemes megfigyelni az $y$ tengelyt is: végig egy nagyságrenden belül marad a fonal hossza. Ez figyelhető meg a \ref{fig:trade500_traj}. ábrán is: a fonal alig nyúlik meg. 
 
-Az augusztusi, szeptemberi, illetve októberi előrejelzések ,,szokványosak", kis tranziens után jó közelítéssel állandó -- az IFS esetében nagyobb -- topologikus entrópiára beállás figyelhető meg.
+Az augusztusi, illetve szeptemberi előrejelzések ,,szokványosak", kis tranziens után jó közelítéssel állandó -- az IFS esetében nagyobb -- topologikus entrópiára beállás figyelhető meg. 
+
+Októberben észrevehető, hogy az AIFS és IFS által előrejelzett fonalhosszban szétválás következik be. Ennek oka az lehet, hogy míg az IFS szélelőrejelzése szerint a részecskék a Himalájáig is eljutottak, ami hatása már az 500 hPa-os szinten is észlelhető, addig az AIFS előrejelzése szerint nem érték el a részecskék a hegységet. Így az IFS bonyolultabb, hosszabb fonalalakot jelzett előre, mint az AIFS.
 
 A topologikus entrópiákat a \ref{fig:trade500_top_bar}. oszlopdiagramon is ábrázoltam. 
 
@@ -1087,13 +1090,220 @@ Meglepő, hogy egyetlen esetben, júliusban az AIFS topologikus entrópiája 140
 A többi esetben a szokásos eredményeket kaptam: a júliusi anomália kihagyásával az AIFS topologikus entrópiája átlagosan 62,5\%-a az IFS-ének. Legnagyobb eltérés októberben, a legkisebb augusztusban figyelhető meg.
 
 \subsubsection{700 hPa-os szint}
+Az alábbi, \ref{fig:trade700_traj}. ábrán a június 1-i, szeptember 1-i, illetve október 1-i indítású fonalalak-előrejelzéseket mutatom be.
 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_700hPa_0701.png"}
+        \caption{2026. július 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_700hPa_0901.png"}
+        \caption{2026. szeptember 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_700hPa_1001.png"}
+        \caption{2026. október 1.}
+    \end{subfigure}
+    \caption{A fonal kezdeti (zöld), illetve a szimuláció 168. órájában felvett alakja (piros). Mindegyik ábrán felül az AIFS, alul az IFS előrejelzése látható.}
+    \label{fig:trade700_traj}
+\end{figure}
 
+A fonal alakja hasonló az 500 hPa-on tapasztalthoz. Júliusban és szeptemberben nem bonyolultabb alakú, csak hosszabb a fonal, melynek oka -- figyelembe véve, hogy a részecskék által bejárt afrikai területen a legmagasabb hegység csupán 1500 m körüli, tehát a domborzatnak 3000 m-en, a 700 hPa-os szinten nincs nagy hatása -- az lehet, hogy 700 hPa-on erősebb szelek fújnak, mint 500 hPa-on. A jet stream-ekhez képest fordított helyzetnek az oka, hogy míg a futóáramlások felfelé haladva egyre nagyobb sebességűek, addig a passzátszelet a Hadley-cella földfelszínhez közelebbi, horizontális ága okozza, ezért alacsonyabban nagyobb szélsebességek tapasztalhatóak. Nagy sebességű -- de ellentétes irányú -- szél még a Hadley-cella tetején (a tropopauza közelében) lenne tapasztalható, de az kívül esik a vizsgált nyomási szinteken. 
 
+Hosszabbon kívül bonyolultabb alakú fonal csak az októberi előrejelzésben figyelhető meg, ennek oka az lehet, hogy a részecskék már elérték a Himaláját, illetve az azt környékező, 3000 m-t meghaladó hegységeket.
 
+Az illesztéseket bizonytalanságukkal együtt a \ref{tab:trade700_top}. táblázat és \ref{fig:trade700_top}. ábra mutatják be.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{subtable}{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|c|}\hline
+            & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.09.01.} & \textbf{2026.10.01.} \\\hline
+            \textbf{h [1/h]} & 0.0170(3) & 0.0102(3) & 0.0073(4) & 0.0096(8) & 0.0126(5) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0167, 0.0174) & (0.0099, 0.0106) & (0.0070, 0.0077) & (0.0087, 0.0104) & (0.0121, 0.0131) \\\hline
+        \end{tabular}
+        \caption{AIFS}
+    \end{subtable}
+
+    \vspace{0.6cm}
+
+    \begin{subtable}{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|c|}\hline
+            & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.09.01.} & \textbf{2026.10.01.} \\\hline
+            \textbf{h [1/h]} & 0.0229(6) & 0.0130(5) & 0.0161(2) & 0.0154(3) & 0.0217(3) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0223, 0.0235) & (0.0124, 0.0135) & (0.0159, 0.0163) & (0.0151, 0.0157) & (0.0214, 0.0221) \\\hline
+        \end{tabular}
+        \caption{IFS}
+    \end{subtable}
+    \caption{Topologikus entrópia ($h$) és a 95\%-os konfidenciaintervallum különböző kezdőidőkre.}
+    \label{tab:trade700_top}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade700_0601.png"}
+        \caption{2026. 06. 01-i előrejelzés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade700_0701.png"}
+        \caption{2026. 07. 01-i előrejelzés}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade700_0801.png"}
+        \caption{2026. 08. 01-i előrejelzés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade700_0901.png"}
+        \caption{2026. 09. 01-i előrejelzés}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade700_1001.png"}
+        \caption{2026. 10. 01-i előrejelzés}
+    \end{subfigure}
+
+    \caption{Fonalhossz időfüggése és topologikus entrópia illesztés, 700 hPa, k.h. 20$^\circ$ mentén é.sz. $[10^\circ, 20^\circ]$.}
+    \label{fig:trade700_top}
+\end{figure}
+
+A 700 hPa-on tapasztalható időbeli fonalhossz-változások sokkal ,,hullámosabbak", mint 500 hPa-on voltak, így illeszteni is nehezebben lehetett. Az AIFS topologikus entrópiája minden esetben alacsonyabb volt az IFS-énél, melyet a \ref{fig:trade700_top_bar}. ábra is szemléltet.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../figures/topo/trade700_barplots.png"}
+    \caption{A topologikus entrópia értékeinek összehasonlítása a különböző modellekre. Az AIFS előrejelzése átlagosan 63,7\%-a az IFS-ének.}
+    \label{fig:trade700_top_bar}
+\end{figure}
+
+Az AIFS által előrejelzett topologikus entrópia átalgosan 63,7\%-a volt az IFS-ének. A legnagyobb eltérés augusztusban, a legkisebb júliusban volt tapasztalható. 
 
 \subsubsection{850 hPa-os szint}
+A várakozásaim szerint 850 hPa-on lesz a passzátszelek tartományában a legbonyolultabb és leghosszabb fonalalak, mivel 1500 m-en már a domborzat hatása is erősen érződik, illeve a Hadley-cella trópusok felé visszatérő ágának is nagyobb hatása van, nagyobb a szélsebesség.
 
+A fonalalakokat a \ref{fig:trade850_traj}. ábra mutatja be július 1-én, szeptember 1-én és október 1-én indított előrejelzések alapján az előrejelzés 168. órájában.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_850hPa_0701.png"}
+        \caption{2026. július 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_850hPa_0901.png"}
+        \caption{2026. szeptember 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/trajs/trade_850hPa_1001.png"}
+        \caption{2026. október 1.}
+    \end{subfigure}
+    \caption{A fonal kezdeti (zöld), illetve a szimuláció 168. órájában felvett alakja (piros). Mindegyik ábrán felül az AIFS, alul az IFS előrejelzése látható.}
+    \label{fig:trade850_traj}
+\end{figure}
+
+A várakozásknak megfelelően alakultak a fonalak, habár általában a kontinensen belül maradtak. A topologikus entrópiák illesztését, illetve számszerűsítésüket a \ref{fig:trade850_top}. ábra és \ref{tab:trade850_top}. táblázat mutatja be.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{subtable}{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|c|}\hline
+            & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.09.01.} & \textbf{2026.10.01.} \\\hline
+            \textbf{h [1/h]} & 0.0061(5) & 0.0042(9) & 0.0144(6) & 0.0054(8) & 0.0174(5) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0056, 0.0066) & (0.0033, 0.0051) & (0.0137, 0.0150) & (0.0045, 0.0062) & (0.0169, 0.0179) \\\hline
+        \end{tabular}
+        \caption{AIFS}
+    \end{subtable}
+
+    \vspace{0.6cm}
+
+    \begin{subtable}{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|c|}\hline
+            & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.09.01.} & \textbf{2026.10.01.} \\\hline
+            \textbf{h [1/h]} & 0.026(1) & 0.0250(10) & 0.029(3) & 0.0096(4) & 0.0302(6) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0251, 0.0277) & (0.0240, 0.0260) & (0.0256, 0.0320) & (0.0092, 0.0100) & (0.0296, 0.0309) \\\hline
+        \end{tabular}
+        \caption{IFS}
+    \end{subtable}
+    \caption{Topologikus entrópia ($h$) és a 95\%-os konfidenciaintervallum különböző kezdőidőkre.}
+    \label{tab:trade850_top}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade850_0601.png"}
+        \caption{2026. 06. 01-i előrejelzés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade850_0701.png"}
+        \caption{2026. 07. 01-i előrejelzés}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade850_0801.png"}
+        \caption{2026. 08. 01-i előrejelzés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade850_0901.png"}
+        \caption{2026. 09. 01-i előrejelzés}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{"../figures/topo/trade850_1001.png"}
+        \caption{2026. 10. 01-i előrejelzés}
+    \end{subfigure}
+
+    \caption{Fonalhossz időfüggése és topologikus entrópia illesztés, 850 hPa, k.h. 20$^\circ$ mentén é.sz. $[10^\circ, 20^\circ]$.}
+    \label{fig:trade850_top}
+\end{figure}
+
+A fonalhossz időbeli változásában nagyon erős ,,hullámzás" figyelhető meg, melynek fő oka a 850 hPa-on már nagyobb hatással bíró domborzat lehet. Szembetűnő, hogy az AIFS topologikus entrópiája október kivételével minden esetben sokkal kisebb, mint az IFS-é -- a \ref{fig:trade850_traj}. ábrán bemutatott mintákon is ez volt észrevehető. A pontos összehasonlítást a \ref{fig:trade850_top_bar}. ábra mutatja be.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../figures/topo/trade850_barplots.png"}
+    \caption{A topologikus entrópia értékeinek összehasonlítása a különböző modellekre. Az AIFS előrejelzése átlagosan 40,8\%-a az IFS-ének.}
+    \label{fig:trade850_top_bar}
+\end{figure}
+
+Az összes vizsgált eset közül itt átlagosan a legnagyobb az eltérés az IFS és AIFS előrejelzése között: az AIFS előrejelzése átlagosan csupán 40,8\%-a az IFS-ének. A legnagyobb eltérés júliusban (az AIFS mindössze 17\%-a az IFS-nek), a legkisebb októberben tapasztalható (58\%; azonban ez elmarad a korábban megfigyelt 70-80\%-os minimális eltérésektől).
 
 
 \section{Diszkusszió}
@@ -1130,7 +1340,27 @@ A 2026. szeptember 1-i előrejelzésekkel stabilan csak kb. 148 óráig tudtam m
     \label{fig:instability}
 \end{figure}
 
-%\subsection{Topologikus entrópia és a szimuláció futási idejének korrelációja}
+\subsection{Összefoglalás}
+A dolgozatomban megvizsgáltam három nyomási szinten három földrajzi területen az elindított részecskék mozgását IFS-, illetve AIFS-szélelőrejelzésekkel meghajtott trajektóriamodellezéssel. A szimulációs idő 168 óra volt, hogy a szimuláció már elég reprezentatív legyen, de ne használjon fel túl sok erőforrást a trajektóriamodell futás közben.
+
+Az összes szimuláció eredményeképpen egybehangzóan kijött, hogy az AIFS kevésbé kaotikus, mint az IFS; a gépi tanulás alapú modell topologikus entrópiája minden esetben kisebb-nagyobb mértékben alulmúlta a fizikai modellét.
+
+A földrajzi helyfüggést is megfigyeltem: a legbonyolultabb áramlás a vizsgált tartományok közül a k.h. 20$^\circ$ mentén az é.sz. $[45^\circ, 55^\circ]$ tartományban volt, a legsimább az áramlás a passzátszelek területén volt. 
+
+A nyomási szinttől is függött a modellelőrejelzések kaotikussága: az IFS-nél a fölfelszínhez közelebbi szinteken egyértelműen nagyobb volt a topologikus entrópia, az AIFS esetében nem volt ennyire egyértelmű a növekedés, minden szinten átlagosan szinte ugyanakkora volt a topologikus entrópia. Ezt szemlélteti a \ref{fig:h_p_dependence}. ábra, ahol a topologikus entrópia átlagos értékét ábrázotlam modellenként a nyomási szint függvényében.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../figures/topo/h_p_dependence.png"}
+    \caption{A topologikus entrópia átlagos értéke nyomási szintenként.}
+    \label{fig:h_p_dependence}
+\end{figure}
+
+\subsection{További kutatás lehetősége}
+Még pontosabb képet lehetne kapni a gépi tanulás alapú modell kaotikusságáról, ha további időpontokat, nyomási szinteket, illetve földrajzi helyeket vizsgálnék meg. Az állítások azonban a jelenleg felhasznált adatmennyiség mellett is konzekvensnek tűnnek.
+
+Érdekes lehet továbbá megvizsgálni az AIFS modell korábbi verzióját, az AIFS v1-et: vajon a jelenlegi verzióhoz képest a korábbi verzió kevésbé tudta-e reprezentálni a káoszt. A közeljövőben az AIFS v3-at is publikálni tervezik, melyben a modellfejlesztők az elmosás (smoothing) kisebb mértékű megjelenését ígérik. Az új modell megjelenése után érdekes lehet annak az előrejelzéseit is megvizsgálni; a korábbi verziókkal, illetve a standardnak vett fizikai alapú IFS-előrejelzésekkel összevetni.
+
 
 \section{Köszönetnyilvánítás}
 A kutatás az NKKP STARTING 153030 projekt keretében készült.
