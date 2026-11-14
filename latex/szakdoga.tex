@@ -41,10 +41,9 @@
 
     Kutatásomban trajektóriamodellezésen keresztül megvizsgálom, hogy a European Centre for Medium-Range Weather Forecasts (ECMWF) jelenleg élvonalbeli hagyományos, kaotikus jegyeket bizonyítottan mutató modelljével (IFS) szemben az MLWP-modellje (AIFS) mutat-e kaotikus viselkedést.
 
-    2026. június 1-jén UTC 0 órakor futtatott szélelőrejelzéseket használtam. Az előrejelzések tér- és időbeli felbontásának finomítása lineáris interpolációval történt. Egymáshoz közel indított részecskék trajektóriáira felírt, csak a szél sodrását figyelembe vevő differenciálegyenlet-rendszert adott izobárszinten a modellek szélsebesség-előrejelzéseit felhasználva numerikusan integráltam. A részecskéket összekötő fonal hosszának exponenciális időbeli változásából topologikus entrópia számolható.
+    2026. június 1-jén, július 1-jén, augusztus 1-jén, szeptember 1-jén és október 1-jén UTC 0 órakor futtatott szélelőrejelzéseket használtam. Az előrejelzések tér- és időbeli felbontásának finomítása lineáris interpolációval történt. Egymáshoz közel indított részecskék trajektóriáira felírt, csak a szél sodrását figyelembe vevő differenciálegyenlet-rendszert adott izobárszinten a modellek szélsebesség-előrejelzéseit felhasználva numerikusan integráltam. A részecskéket összekötő fonal hosszának exponenciális időbeli változásából topologikus entrópia számolható.
 
-    Az IFS és AIFS esetében is sikerült exponenciális időbeli változást kimutatni, és pozitív topologikus entrópiát meghatározni, ami kaotikus viselkedésre utal. Durva térbeli felbontáson topologikus entrópia nem volt meghatározható. 150 óránál hosszabb előrejelzési időtávon az exponenciális kapcsolat az IFS-nél és AIFS-nél is kimutathatatlanná vált, ami a szomszédos részecskék egymástól való túlzott eltávolodásával, ezáltal pedig a topologikus entrópia alulbecslésével magyarázható.
-    A vizsgált szinteken (500, 700, 850 hPa) az AIFS topologikus entrópiája jellemzően alacsonyabb, mint az IFS-é, melynek oka lehet az MLWP modellekre jellemző elmosódás jelensége. A vizuálisan ábrázolt, IFS szélelőrejelzésén alapuló trajektória-előrejelzések AIFS-énél komplexebb térbeli szerkezete is ezt támasztja alá. A földfelszín zavaró hatása megfigyelhető, magasabb nyomású izobárszinteken a topologikus entrópia magasabb.
+    Az IFS és AIFS esetében is sikerült exponenciális időbeli változást kimutatni, és pozitív topologikus entrópiát meghatározni, ami kaotikus viselkedésre utal. Durva térbeli felbontáson topologikus entrópia nem volt meghatározható. A részecskék egymástól való túlzott eltávolodását, ezáltal pedig a topologikus entrópia alulbecslését 20 km-es küszöbbel dinamikus részecskebeszúrással korrigáltam. A vizsgált szinteken (500, 700, 850 hPa) az AIFS topologikus entrópiája jellemzően alacsonyabb, mint az IFS-é, melynek oka lehet az MLWP modellekre jellemző elmosódás jelensége. A vizuálisan ábrázolt, IFS szélelőrejelzésén alapuló trajektória-előrejelzések AIFS-énél komplexebb térbeli szerkezete is ezt támasztja alá. Az IFS esetében a földfelszín zavaró hatása megfigyelhető, magasabb nyomású izobárszinteken a topologikus entrópia magasabb. Az AIFS esetében nem volt korreláció a topologikus entrópia értéke és a földfelszínhez való közelség között.
 
     Az alkalmazott lagrange-i megközelítés alapján tehát az AIFS is mutat kaotikus tulajdonságokat, ami azt jelenti, hogy a modell nem veszíti el teljesen a tanulás során a légkör ezen tulajdonságának reprezentálását, de az elmosódás hatása megfigyelhető.
 \end{abstract}
@@ -497,7 +496,7 @@ A 700 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i tr
     \label{fig:hun700_traj}
 \end{figure}
 
-A bemutatottak közül legbonyolultabb áramlás júniusban és augusztusban volt. Megfigyelhető, hogy az AIFS által előrejelzett fonalalak ismét egyszerűbb térbeli struktúrájú, mint az IFS-é. A \ref{tab:hun700_top}. táblázat a megfigyeléseket kvantitatívan mutatja be. A \ref{fig:hun700_top}. ábrán az illesztéseket a konfidenciaintervallumal is ábrázoltam. A 700 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 90 és 150 óra közé határoztam meg az illesztési tartományt.
+Megfigyelhető, hogy az AIFS által előrejelzett fonalalak ismét egyszerűbb térbeli struktúrájú, mint az IFS-é. A \ref{tab:hun700_top}. táblázat a megfigyeléseket kvantitatívan mutatja be. A \ref{fig:hun700_top}. ábrán az illesztéseket a konfidenciaintervallummal is ábrázoltam. A 700 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 90 és 150 óra közé határoztam meg az illesztési tartományt.
 
 \begin{table}[H]
     \centering
@@ -569,11 +568,11 @@ Hasonlóan az 500 hPa-os szinthez, itt is ábrázoltam a kapott topologikus entr
     \label{fig:hun700_top_bar}
 \end{figure}
 
-A \ref{fig:hun700_top_bar}. ábra alapján látható, hogy az augusztus az IFS számára ,,bonyolultabb" volt, az AIFS ,,kevésbé kaotikusnak" érezte az augusztust, mint a júniust. Az AIFS előrejelzése átlagosan ugyanakkora része az IFS-ének, 0,7\%-kal nagyobb az eltérés -- ez azt jelenti, hogy miniálisan jobban megjelenik az AIFS elmosása 700 hPa-on.
+A \ref{fig:hun700_top_bar}. ábra alapján látható, hogy az augusztus az IFS számára ,,bonyolultabb" volt, az AIFS ,,kevésbé kaotikusnak" érezte az augusztust, mint a júniust. Az AIFS előrejelzése átlagosan ugyanakkora része az IFS-ének, 0,7\%-kal nagyobb az eltérés -- ez azt jelenti, hogy minimálisan jobban megjelenik az AIFS elmosása 700 hPa-on.
 
 
 \subsubsection{850 hPa-os szint}
-A 850 hPa-os szinten is a 2026. június 1-i, július 1-i, illetve augusztus 1-i térképeket mutatom be.
+A 850 hPa-os szinten is a 2026. június 1-i, július 1-i, illetve október 1-i térképeket mutatom be.
 
 \begin{figure}[H]
     \centering
@@ -598,7 +597,7 @@ A 850 hPa-os szinten is a 2026. június 1-i, július 1-i, illetve augusztus 1-i 
 
 Az összes időponthoz tartozó ábrán szembetűnő, hogy az AIFS által előrejelzett fonal alakja jelentősen egyszerűbb térbeli struktúrájú, mint az IFS-é, mintha az AIFS fonalát az IFS fonalának kisimításával kapnánk. 
 
-A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanságával együtt, illetve a 95\%-os konfidenciaintervallumot tüntettem fel. A \ref{fig:hun850_top}. ábrán az egyenesillesztések a konfidenciaintervallumal együtt vannak ábrázolva. A 850 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 125 és 160 óra közé határoztam meg az illesztési tartományt.
+A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanságával együtt, illetve a 95\%-os konfidenciaintervallumot tüntettem fel. A \ref{fig:hun850_top}. ábrán az egyenesillesztések a konfidenciaintervallummal együtt vannak ábrázolva. A 850 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 125 és 160 óra közé határoztam meg az illesztési tartományt.
 
 \begin{table}[H]
     \centering
@@ -606,8 +605,8 @@ A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanság
         \centering
         \begin{tabular}{|c|c|c|c|c|}\hline
             & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.10.01.} \\\hline
-            \textbf{h [1/h]} & 0.0247(2) &  0.0211(2) & 0.0201(3) & 0.0153(1) \\\hline
-            \textbf{95\% CI [1/h]} & (0.0245, 0.0248) & (0.0209, 0.0213) & (0.0198, 0.0204) & (0.0151, 0.0154) \\\hline
+            \textbf{h [1/h]} & 0.0290(3) &  0.0231(1) & 0.02406(9) & 0.0142(4) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0287, 0.0293) & (0.0230, 0.0232) & (0.0240, 0.0241) & (0.0138, 0.0146) \\\hline
         \end{tabular}
         \caption{AIFS}
     \end{subtable}
@@ -618,8 +617,8 @@ A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanság
         \centering
         \begin{tabular}{|c|c|c|c|c|}\hline
             & \textbf{2026.06.01.} & \textbf{2026.07.01.} & \textbf{2026.08.01.} & \textbf{2026.10.01.} \\\hline
-            \textbf{h [1/h]} & 0.0299(3) & 0.0305(4) & 0.0337(3) & 0.0297(4) \\\hline
-            \textbf{95\% CI [1/h]} & (0.0296, 0.0302) & (0.0301, 0.0309) & (0.0335, 0.0340) & (0.0293, 0.0301) \\\hline
+            \textbf{h [1/h]} & 0.0350(6) & 0.0313(4) & 0.0354(6) & 0.0310(3) \\\hline
+            \textbf{95\% CI [1/h]} & (0.0345, 0.0356) & (0.0309, 0.0317) & (0.0348, 0.0360) & (0.0307, 0.0314) \\\hline
         \end{tabular}
         \caption{IFS}
     \end{subtable}
@@ -661,12 +660,12 @@ A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanság
 
 850 hPa-on (kb. 1500 m) is megfigyelhető a topologikus entrópia változása, a függvény ,,hullámzása", aminek oka a domborzat lehet.
 
-A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar}. ábrán mutatom be. Ismét észrevehető, hogy az AIFS topologikus entrópiája minden esetben alulmúlja az IFS-ét, átlagosan 65,7\%-a az AIFS előrejelzése az IFS előrejelzésének. A vizsgált nyomási szintek közül itt van átlagosan a legközelebb a két előrejelzés egymáshoz. A legközelebb a két előrejelzés júniusban, a legtávolabb októberben van. 
+A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar}. ábrán mutatom be. Ismét észrevehető, hogy az AIFS topologikus entrópiája minden esetben alulmúlja az IFS-ét, átlagosan 67,7\%-a az AIFS előrejelzése az IFS előrejelzésének. A vizsgált nyomási szintek közül itt van átlagosan a legközelebb a két előrejelzés egymáshoz. A legközelebb a két előrejelzés júniusban, a legtávolabb októberben van. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{"../figures/topo/hun850_barplots.png"}
-    \caption{A topologikus entrópia értékeinek összehasonlítása a különböző modellekre. Az AIFS előrejelzése átlagosan 65,7\%-a az IFS-ének.}
+    \caption{A topologikus entrópia értékeinek összehasonlítása a különböző modellekre. Az AIFS előrejelzése átlagosan 67,7\%-a az IFS-ének.}
     \label{fig:hun850_top_bar}
 \end{figure}
 
@@ -676,7 +675,7 @@ A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar}. 
 A poláris jet stream nagyon erős nyugati irányú szél (sebessége kb. 180 km/h ), mely a troposzféra tetején (kb. 9 km) fúj \cite{noauthor_jet_2026}. Az elhelyezkedésének megfelelően a vizsgált szintek közül 500 hPa-on látszik a legjobban, bár hatása a földfelszínhez közelebb is megjelenik. A poláris jet stream hullámzása miatt a részecskék változatos trajektóriákon mozoghatnak, indulhatnak keletre, északra, vagy délre is, a jet stream hullámainak megfelelően.
 
 \subsubsection{500 hPa-os szint}
-A június 1-i, július 1-i, illetve október 1-i ECMWF-modellfutások alapján készült trajektóriaelőrejelzéseket mutatja be a \ref{jet500_traj}. ábra.
+A június 1-i, július 1-i, illetve október 1-i ECMWF-modellfutások alapján készült trajektóriaelőrejelzéseket mutatja be a \ref{fig:jet500_traj}. ábra.
 
 \begin{figure}[H]
     \centering
@@ -762,7 +761,7 @@ A topologikus entrópia meghatározásához szükséges illesztéseket, illetve 
     \label{fig:jet500_top}
 \end{figure}
 
-A fonalhosszat idő függvényében ábrázolva nem látható jelentősebb hullámzás, a kezdeti tranziens szakasz is sima. A topologikus entrópiákat egymáshoz viszonyítva a \ref{fig:jet500_bar}. ábra mutatja be.
+A fonalhosszat idő függvényében ábrázolva nem látható jelentősebb hullámzás, a kezdeti tranziens szakasz is sima. A topologikus entrópiákat egymáshoz viszonyítva a \ref{fig:jet500_top_bar}. ábra mutatja be.
 
 \begin{figure}[H]
     \centering
@@ -804,7 +803,7 @@ A június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések ala
     \label{fig:jet700_traj}
 \end{figure}
 
-Mindenhol az AIFS előrejelzése egyszerűbb fonalalakot vár. Számszerűsítve a topologikus entrópiákat a \ref{tab:jet700_top}. táblázat és \ref{fig:jet500_top}. ábra mutatja be. Az illesztés az előrejelzés 90. és 150. órája között történt.
+Mindenhol az AIFS előrejelzése egyszerűbb fonalalakot vár. Számszerűsítve a topologikus entrópiákat a \ref{tab:jet700_top}. táblázat és \ref{fig:jet700_top}. ábra mutatja be. Az illesztés az előrejelzés 90. és 150. órája között történt.
 
 \begin{table}[H]
     \centering
@@ -857,7 +856,7 @@ Mindenhol az AIFS előrejelzése egyszerűbb fonalalakot vár. Számszerűsítve
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{"../figures/topo/jet500_1001.png"}
+        \includegraphics[width=\textwidth]{"../figures/topo/jet700_1001.png"}
         \caption{2026. 10. 01-i előrejelzés}
     \end{subfigure}
 
@@ -1090,7 +1089,7 @@ Meglepő, hogy egyetlen esetben, júliusban az AIFS topologikus entrópiája 140
 A többi esetben a szokásos eredményeket kaptam: a júliusi anomália kihagyásával az AIFS topologikus entrópiája átlagosan 62,5\%-a az IFS-ének. Legnagyobb eltérés októberben, a legkisebb augusztusban figyelhető meg.
 
 \subsubsection{700 hPa-os szint}
-Az alábbi, \ref{fig:trade700_traj}. ábrán a június 1-i, szeptember 1-i, illetve október 1-i indítású fonalalak-előrejelzéseket mutatom be.
+Az alábbi, \ref{fig:trade700_traj}. ábrán a július 1-i, szeptember 1-i, illetve október 1-i indítású fonalalak-előrejelzéseket mutatom be.
 
 \begin{figure}[H]
     \centering
@@ -1311,7 +1310,7 @@ Az összes vizsgált eset közül itt átlagosan a legnagyobb az eltérés az IF
 \subsection{Numerikus instabilitás megjelenése}
 A (\ref{eq:lambda}). egyenletben a 0-val osztást úgy kerüli ki a trajektóriamodell, hogy csak a $89,9^\circ$-ig veszi figyelembe a szélességi köröket. Azonban ha $\varphi$ nagyon megközelíti ezt a határértéket, a függvény szingularitásához közelítve numerikus instabilitást eredményez.
 
-A 2026. szeptember 1-i előrejelzésekkel stabilan csak kb. 148 óráig tudtam meghajtani a trajektóriamodellt. Az előrejelzés 145. órájában (2026. szeptember 6. 1 UTC) ábrázolt reanalízis szélelőrejelzések alapján látható, hogy az instabilitást a jet stream északi pólus felé tolódása okozza (\ref{fig:instability}. ábra). Emiatt a k.h. 20$^\circ$ mentén é.sz. $[45^\circ, 55^\circ]$, illetve a jet stream tértartományára a 2026. szeptember 1-i adatokat nem dolgoztam fel.
+A 2026. szeptember 1-i előrejelzésekkel stabilan csak kb. 148 óráig tudtam meghajtani a trajektóriamodellt. Az előrejelzés 144. órájában (2026. szeptember 6. 0 UTC -- a térkép téli időszámítás szerinti helyi időt használ) ábrázolt reanalízis szélelőrejelzések alapján látható, hogy az instabilitást a jet stream északi pólus felé tolódása okozza (\ref{fig:instability}. ábra). Emiatt a k.h. 20$^\circ$ mentén é.sz. $[45^\circ, 55^\circ]$, illetve a jet stream tértartományára a 2026. szeptember 1-i adatokat nem dolgoztam fel.
 
 \begin{figure}[H]
     \centering
