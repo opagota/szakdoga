@@ -8,7 +8,7 @@
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    {\large Eötvös Loránd Tudományegyetem Természettudományi Kar\par}
+    {\large ELTE Eötvös Loránd Tudományegyetem Természettudományi Kar\par}
     \vspace{0.5cm}
     {\Huge \bfseries Gépi tanuláson alapuló időjárás-előrejelző modell kaotikusságának vizsgálata légköri trajektóriákkal\par}
     \vspace{1cm}
@@ -308,7 +308,7 @@ tehát a mozgás bonyolultságával van kapcsolatban: minél nagyobb $h$, annál
 
 
 \section{Adat, módszer}
-Vizsgálataim során 2 dimenziós trajektóriamodellt hajtottam meg 2026. június 1-én UTC szerint 0 órakor készült ECMWF-IFS, illetve ECMWF-AIFS szél-előrejelzésekkel. Az előrejelzések középtávúak (360 órára előre készülnek el 6 órás lépésekkel), determinisztikusak, és jelentős számú izobárszintre (1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa) elkészülnek $0,25^\circ \times 0,25^\circ$ globális térbeli felbontással.
+Vizsgálataim során 2 dimenziós trajektóriamodellt hajtottam meg 2026. június 1-jén, július 1-jén, augusztus 1-jén, szeptember 1-jén, illetve október 1-jén UTC szerint 0 órakor készült ECMWF-IFS, illetve ECMWF-AIFS szél-előrejelzésekkel. Az előrejelzések középtávúak (360 órára előre készülnek el 6 órás lépésekkel), determinisztikusak, és jelentős számú izobárszintre (1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50 hPa) elkészülnek $0,25^\circ \times 0,25^\circ$ globális térbeli felbontással.
 
 \subsection{A trajektóriamodell}
 Trajektóriamodellnek egy, a témavezetőm által biztosított, Python nyelven írt modellt vettem alapul. Ezt jelentősen átalakítva, illetve további funkciókkal bővítve használtam fel.
@@ -1293,7 +1293,7 @@ A várakozásknak megfelelően alakultak a fonalak, habár általában a kontine
     \label{fig:trade850_top}
 \end{figure}
 
-A fonalhossz időbeli változásában nagyon erős ,,hullámzás" figyelhető meg, melynek fő oka a 850 hPa-on már nagyobb hatással bíró domborzat lehet. Szembetűnő, hogy az AIFS topologikus entrópiája október kivételével minden esetben sokkal kisebb, mint az IFS-é -- a \ref{fig:trade850_traj}. ábrán bemutatott mintákon is ez volt észrevehető. A pontos összehasonlítást a \ref{fig:trade850_top_bar}. ábra mutatja be.
+A fonalhossz időbeli változásában nagyon erős ,,hullámzás" figyelhető meg, melynek fő oka a 850 hPa-on már nagyobb hatással bíró domborzat lehet. Szembetűnő, hogy az AIFS topologikus entrópiája júniusban és júliusban jelentősen kisebb, mint az IFS-é -- a \ref{fig:trade850_traj}. ábrán bemutatott mintákon is ez volt észrevehető. A pontos összehasonlítást a \ref{fig:trade850_top_bar}. ábra mutatja be.
 
 \begin{figure}[H]
     \centering
@@ -1310,7 +1310,7 @@ Az összes vizsgált eset közül itt átlagosan a legnagyobb az eltérés az IF
 \subsection{Numerikus instabilitás megjelenése}
 A (\ref{eq:lambda}). egyenletben a 0-val osztást úgy kerüli ki a trajektóriamodell, hogy csak a $89,9^\circ$-ig veszi figyelembe a szélességi köröket. Azonban ha $\varphi$ nagyon megközelíti ezt a határértéket, a függvény szingularitásához közelítve numerikus instabilitást eredményez.
 
-A 2026. szeptember 1-i előrejelzésekkel stabilan csak kb. 148 óráig tudtam meghajtani a trajektóriamodellt. Az előrejelzés 144. órájában (2026. szeptember 6. 0 UTC -- a térkép téli időszámítás szerinti helyi időt használ) ábrázolt reanalízis szélelőrejelzések alapján látható, hogy az instabilitást a jet stream északi pólus felé tolódása okozza (\ref{fig:instability}. ábra). Emiatt a k.h. 20$^\circ$ mentén é.sz. $[45^\circ, 55^\circ]$, illetve a jet stream tértartományára a 2026. szeptember 1-i adatokat nem dolgoztam fel.
+A 2026. szeptember 1-i előrejelzésekkel stabilan csak kb. 148 óráig tudtam meghajtani a trajektóriamodellt. Az előrejelzés 144. órájában (2026. szeptember 6. 0 UTC -- a térkép téli időszámítás szerinti helyi időt használ) ábrázolt szélelőrejelzések alapján látható, hogy az instabilitást a jet stream északi pólus felé tolódása okozza (\ref{fig:instability}. ábra). Emiatt a k.h. 20$^\circ$ mentén é.sz. $[45^\circ, 55^\circ]$, illetve a jet stream tértartományára a 2026. szeptember 1-i adatokat nem dolgoztam fel.
 
 \begin{figure}[H]
     \centering
@@ -1362,9 +1362,31 @@ Még pontosabb képet lehetne kapni a gépi tanulás alapú modell kaotikusság�
 
 
 \section{Köszönetnyilvánítás}
-A kutatás az NKKP STARTING 153030 projekt keretében készült.
+A kutatás az NKKP STARTING 153030 projekt keretében készült. A Tudományos és Technológiai Minisztérium EKÖP-26 kódszámú Egyetemi Kutatói Ösztöndíj Programjának a Nemzeti Kutatási, Fejlesztési és Innovációs Alapból finanszírozott szakmai támogatásával készült.
+
+\section{MI nyilatkozat}
+Nyilatkozom, hogy dolgozatom elkészítése során nem használtam mesterséges intelligencia (MI) alapú eszközöket a dolgozatom szövegének generálására. Az alább felsorolt feladatok elvégzésére a megadott MI alapú eszközöket alkalmaztam. A felsoroltakon túl más MI alapú eszközt nem használtam.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{|p{3cm}|p{4cm}|p{3.5cm}|p{4.5cm}|}\hline
+       \textbf{Feladat}  & \textbf{Felhasznált eszköz} & \textbf{Felhasználás helye} & \textbf{Megjegyzés}\\\hline
+
+        nyelvhelyességi tanácsok & Gemini 3.1 Pro & 
+        teljes dolgozat & \\\hline
+
+        szövegszerkesztés & Gemini 3.1 Pro, Gemini 4 Hydrogen & teljes dolgozat & \LaTeX parancsokban segítség, stilisztikai tanácsok\\\hline
+
+        forrásértelmezés & Gemini 3.5 Flash-Lite, Gemini 3.1 Pro & Bevezetés fejezet & segítség bonyolultabb koncepciók megértésében, szövegértelmezésben \\\hline
+
+        programozás & Gemini 3.1 Pro & Eredmények fejezet & Python kódban hibakeresés, repetatív munkák elvégzése (kód ábrázoló részének megírása), modell hatékonyabbá tételéhez tanácsok\\\hline
+
+        statisztikai elemzés & Gemini 3.1 Pro & Eredmények fejezet & segítség a konfidenciaintervallum kiszámolásában \\\hline        
+        
+    \end{tabular}
+\end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Irodalomjegyzék}
 \bibliographystyle{myplain}
 \bibliography{szakdolgozat}
 \end{document}
