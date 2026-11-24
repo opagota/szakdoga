@@ -54,7 +54,7 @@
 \subsection{Célkitűzés}
 A huszadik század eleje óta -- többek között a bergeni iskola neves kutatóinak köszönhetően -- ismerjük a légkör működését leíró nemlineáris egyenletrendszert, az úgynevezett kormányzó egyenleteket. Az időjárás-előrejelzés hagyományosan ezen egyenletrendszer integrálásán alapul, melyet szuperszámítógépeken futó numerikus modellek hajtanak végre (\textit{Numerical Weather Prediction, NWP}). Az utóbbi években jelentős áttörés történt az időjárás-előrejelzés területén: a 2020-as évek elején megjelentek a gépi tanulás alapú időjárás-előrejelző modellek (\textit{Machine Learning Weather Prediction, MLWP}). A gépi tanulás alapú modellek rekonstruált historikus időjárási adatokból -- úgynevezett reanalízis adatokból --, illetve operatív NWP-előrejelzésekből tanulják meg a légköri folyamatok mintázatait, és ezáltal képesek a kiinduló adatok -- a peremfeltételek -- ismeretében predikciót adni a jövő várható időjárására. Az eltérő megközelítés folytán több előny és hátrány is megjelenik a hagyományos NWP-modellekhez képest.
 
-Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető \cite{pathak_fourcastnet_2022}. A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023 \cite{bi_accurate_2023}; Google GraphCast, 2023 \cite{lam_graphcast_2023}; FuXi, 2023 \cite{chen_fuxi_2023}; FengWu, 2023 \cite{chen_fengwu_2023}; ECMWF-AIFS, 2024 \cite{lang_aifs_2024}; illetve néhány ensemble modell: Google GenCast, 2024 \cite{price_gencast_2024}; ECMWF AIFS ENS, 2025 \cite{noauthor_aifs_2025}), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
+Az MLWP-modellek legnagyobb előnye, hogy rendkívül rövid idő alatt képesek előrejelzést készíteni, melyek pontossága összevethető a hagyományos modellekével. Az első ilyen jelentősebb modell, az NVIDIA FourCastNet 2022-es publikációjában szereplő adatok is ezt támasztják alá: a modell 2 másodperc alatt képes egyhetes időjárás-előrejelzést készíteni, pontossága pedig az egyik legjobb NWP-modell, a European Centre for Medium-Range Weather Forecasting (\textit{ECMWF}) IFS nevű modelljével összemérhető \cite{pathak_fourcastnet_2022} A 2022 óta eltelt években sorra jelentek meg az MLWP-modellek (pl. Huawei Pangu-Weather, 2023 \cite{bi_accurate_2023}; Google GraphCast, 2023 \cite{lam_graphcast_2023}; FuXi, 2023 \cite{chen_fuxi_2023}; FengWu, 2023 \cite{chen_fengwu_2023}; ECMWF-AIFS, 2024 \cite{lang_aifs_2024}; illetve néhány ensemble modell: Google GenCast, 2024 \cite{price_gencast_2024}; ECMWF AIFS ENS, 2025 \cite{noauthor_aifs_2025}), és a tapasztalatok egybehangzóak: az előrejelzések rendkívül gyorsak és pontosak, ami megfelelő indok arra, hogy a modelleket még tovább fejlesszék.
 
 
 A további fejlesztés mellett szól az adatalapú megközelítésből adódó alapvető hátulütők kiküszöbölésére való törekvés is. Egyik ilyen abból ered, hogy a modellek gyakran valamilyen négyzetes hiba, mint a négyzetes középhiba (\textit{Mean Squared Error, MSE}) alapú költségfüggvény minimalizálására vannak betanítva \cite{bonavita_limitations_2024}. Ennek következtében igyekeznek elkerülni a szélsőséges értékek predikcióját, mivel egy tévesen megállapított kiugró érték jelentős büntetést eredményezne. Az ilyen módon előálló szélsőérték-kerülést nevezzük elmosódásnak (smoothing), utalva arra, hogy a kiugró csúcsok mintegy elmosásra kerülnek. 
@@ -95,7 +95,7 @@ Az egyik legegyszerűbb neurális hálózat a Perceptron, melyet 1957-ben Frank 
 \[
 s_j=\sum_{i=1}^m w_{ij}\cdot x_i + b_j; \quad \hat{y_j}=\varphi(s_j),
 \] 
-ahol $x_i$ a bemenet, $b_j$ az elfogultság, $w_{ij}$ a súlymátrix, $s_j$ a súlyozott összeg, $\varphi$ az aktivációs függvény, $\hat{y_j}$ pedig a kimenet. A fentebb leírt mesterséges neuron működését mutatja be az \ref{fig:perceptron}. ábra. \cite{sharkawy_principle_2020,geron_hands-machine_2017,kelleher_deep_2019}.
+ahol $x_i$ a bemenet, $b_j$ az elfogultság, $w_{ij}$ a súlymátrix, $s_j$ a súlyozott összeg, $\varphi$ az aktivációs függvény, $\hat{y_j}$ pedig a kimenet. A fentebb leírt mesterséges neuron működését mutatja be az \ref{fig:perceptron} ábra. \cite{sharkawy_principle_2020,geron_hands-machine_2017,kelleher_deep_2019}.
 
 \begin{figure}[H]
     \centering
@@ -106,7 +106,7 @@ ahol $x_i$ a bemenet, $b_j$ az elfogultság, $w_{ij}$ a súlymátrix, $s_j$ a s�
 
 Egyszeres neuronréteg azonban csak egyszerűbb feladatok elvégzésére alkalmazható; ha bonyolultabb problémákat szeretnénk megoldani, több rétegre van szükség. A kettőnél több rétegből álló ANN-t mély neurális hálózatnak (\textit{Deep Neural Network, DNN}) nevezzük. Ennek legegyszerűbb példája a többrétegű Perceptron (\textit{Multilayer Perceptron, MLP}), ami több rétegnyi TLU-ból áll, melyeket rejtett rétegeknek (\textit{hidden layers}) nevezünk. Minden réteg teljesen hozzá van kapcsolva a szomszédos réteghez (\textit{Fully Connected, FL}) \cite{geron_hands-machine_2017}.
 
-A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Learning, DL}) technológiák alkalmasak. Mélytanulásos architektúra többek között a konvolúciós neurális hálózat (\textit{Convolutional Neural Network, CNN}), rekurrens neurális hálózat (\textit{Recurrent Neural Network, RNN}), a gráfalapú neurális hálózat (\textit{Graph Neural Network, GNN}), a transzformer architektúra (\textit{Transformer}), vagy a Vision Transformer \cite{shi_deep_2025}. Az időjárás-előrejelzésben használt MLWP-modellek áttekintését mutatja a \ref{fig:MLWP-review}. ábra.
+A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Learning, DL}) technológiák alkalmasak. Mélytanulásos architektúra többek között a konvolúciós neurális hálózat (\textit{Convolutional Neural Network, CNN}), rekurrens neurális hálózat (\textit{Recurrent Neural Network, RNN}), a gráfalapú neurális hálózat (\textit{Graph Neural Network, GNN}), a transzformer architektúra (\textit{Transformer}), vagy a Vision Transformer \cite{shi_deep_2025}. Az időjárás-előrejelzésben használt MLWP-modellek áttekintését mutatja a \ref{fig:MLWP-review} ábra.
 
 \begin{figure}[H]
     \centering
@@ -115,7 +115,7 @@ A bonyolultabb feladatok elvégzésére tehát mélytanulásos (\textit{Deep Lea
     \label{fig:MLWP-review}
 \end{figure}
 
-Ahogy az \ref{fig:MLWP-review}. ábrán is látható, az MLWP-modelleknek alapvetően három fajtája van. Legelterjedtebbek az általános célú nagy modellek (\textit{General-Purpose Large Models}), melyek többféle időjárási paraméter globális előrejelzésére alkalmasak. Az operatív időjárás-előrejelzésben kevésbé elterjedtek a doménspecifikus modellek (\textit{Domain-Specific Models}), melyekkel regionális előrejelzést lehet készíteni egyetlen változóra, illetve az alapmodellek (\textit{Foundation Models}), melyekkel még további finomhangolás, specifikus feladathoz adaptálás lehetséges. Az is megfigyelhető, hogy az utóbbi években a CNN és RNN alapú időjárás-előrejelző modellek háttérbe szorultak a GNN és transzformer architektúrájú modellek mellett. 
+Ahogy az \ref{fig:MLWP-review} ábrán is látható, az MLWP-modelleknek alapvetően három fajtája van. Legelterjedtebbek az általános célú nagy modellek (\textit{General-Purpose Large Models}), melyek többféle időjárási paraméter globális előrejelzésére alkalmasak. Az operatív időjárás-előrejelzésben kevésbé elterjedtek a doménspecifikus modellek (\textit{Domain-Specific Models}), melyekkel regionális előrejelzést lehet készíteni egyetlen változóra, illetve az alapmodellek (\textit{Foundation Models}), melyekkel még további finomhangolás, specifikus feladathoz adaptálás lehetséges. Az is megfigyelhető, hogy az utóbbi években a CNN és RNN alapú időjárás-előrejelző modellek háttérbe szorultak a GNN és transzformer architektúrájú modellek mellett. 
 
 A CNN architektúrát LeCun et al. mutatta be 1995-ben \cite{lecun_convolutional_1995}. Az architektúra sturkturált rácsadatok, mint pl. képek feldolgozására alkalmas; klasszikusan a gépi látás területén (pl. képosztályozás) CNN modelleket használnak \cite{shi_deep_2025}. Az RNN-eket 2001-ben mutatta be Medsker \& Jain \cite{medsker_recurrent_2001}, mint időfüggő vagy szekvenciális adatokkal kapcsolatos feladatok (pl. idősor-előrejelzés) végzésére alkalmas architektúrákat. A modell rekurrens módon tanul a kapott adatsorozatból egy belső rejtett állapot segítségével, ami tartalmazza a korábbi rejtett állapotokat és az aktuális bemenetet. A CNN-nél és RNN-nél sokkal fontosabb architektúrák azonban az időjárás-előrejelzésben a GNN-ek és a transzformer alapú neurális hálózatok \cite{shi_deep_2025}.
 
@@ -135,7 +135,7 @@ ahol $d_k$ a \textbf{K} kulcsmátrix (\textit{key matrix}) dimenziója, $\mathbf
 \]
 ahol $\mathbf{W_q} \in \mathbb{R}^{d \times d_k}, \mathbf{W_k} \in \mathbb{R}^{d \times d_k}, \mathbf{W_v} \in \mathbb{R}^{d \times d_v}$ rendre a \textbf{Q, K, V} mátrixokhoz tartozó tanulható súlymátrixok \cite{shi_deep_2025}.
 
-A Vision Transformer-t (\textit{ViT}) Dosovitskiy et al. mutatta be 2021-ben \cite{dosovitskiy_image_2021}. Ez egy olyan transzformer, amely képek feldolgozására lett kifejlesztve. A ViT a bemenetként kapott képet rácsos szerkezetben részekre (\textit{patch}) osztja; ezeket az adatdarabokat (úgynevezett \textit{tokeneket}) alakítja aztán vektorrá és dolgozza fel. Az így előkészített tokeneket továbbítják aztán egy transzformerbe, ahol a figyelemmechanizmus már alkalmazható. A Vision Transformer szerkezetét mutatja a \ref{fig:vit}. ábra.
+A Vision Transformer-t (\textit{ViT}) Dosovitskiy et al. mutatta be 2021-ben \cite{dosovitskiy_image_2021}. Ez egy olyan transzformer, amely képek feldolgozására lett kifejlesztve. A ViT a bemenetként kapott képet rácsos szerkezetben részekre (\textit{patch}) osztja; ezeket az adatdarabokat (úgynevezett \textit{tokeneket}) alakítja aztán vektorrá és dolgozza fel. Az így előkészített tokeneket továbbítják aztán egy transzformerbe, ahol a figyelemmechanizmus már alkalmazható. A Vision Transformer szerkezetét mutatja a \ref{fig:vit} ábra.
 
 \begin{figure}[H]
     \centering
@@ -155,7 +155,7 @@ Egy kaotikus rendszer fő jellemzői \cite{tel_kaotikus_2002}:
     \item Véletlenszerűnek látszó (de valójában determinisztikus) mozgás: a fázistérben komplex, de rendezett (fraktálszerű) megjelenés.
 \end{itemize}
 
-A kaotikus neurális hálózatokat (\textit{Chaotic Neural Network, cNN}) -- a káoszelmélet és neurális hálózatok ötvözetét -- Aihara et al. mutatták be 1990-ben \cite{aihara_chaotic_1990}.  A cNN-ek a kaotikus rendszerek komplex mintázatait képesek reprezentálni. A cNN neuronjai nemlineáris aktivációs függvények által kaotikus dinamikát mutatnak, amely egy ún. bifurkációs paraméter változtatásával szabályozható. Ez azért hasznos, mert így a neurális hálózat komplex -- kaotikus -- kapcsolatokat is felfedezhet az adatok között \cite{anusree_understanding_2025}. A kaotikus neuron szerkezetét az \ref{fig:chaotic_neuron}. ábra mutatja be.
+A kaotikus neurális hálózatokat (\textit{Chaotic Neural Network, cNN}) -- a káoszelmélet és neurális hálózatok ötvözetét -- Aihara et al. mutatták be 1990-ben \cite{aihara_chaotic_1990}.  A cNN-ek a kaotikus rendszerek komplex mintázatait képesek reprezentálni. A cNN neuronjai nemlineáris aktivációs függvények által kaotikus dinamikát mutatnak, amely egy ún. bifurkációs paraméter változtatásával szabályozható. Ez azért hasznos, mert így a neurális hálózat komplex -- kaotikus -- kapcsolatokat is felfedezhet az adatok között \cite{anusree_understanding_2025}. A kaotikus neuron szerkezetét az \ref{fig:chaotic_neuron} ábra mutatja be.
 
 \begin{figure}[H]
     \centering
@@ -175,7 +175,7 @@ Az időjárás-előrejelzés területén a gépi tanulást már több mint 25 é
 
 Az első jelentősebb ANN architektúrán alapuló MLWP-modell az NVIDIA 2022-ben bemutatott, Fourier neurális hálózat alapú FourCastNet (\textit{FOURier ForeCASTing Neural NETwork}) nevű modellje. Az architektúra alapötlete a fentebb már ismertetett ViT. Azonban a ViT erőforrásigénye a pixelszámokkal négyzetesen nő, így sokdimenziós bemeneti adatoknál már nem érdemes használni. Ezen probléma áthidalására fejlesztették ki Guibas et al. 2022-ben az Adaptív Fourier Neurális Operátorokat (\textit{Adaptive Fourier Neural Operator, AFNO}). A módszer a függvények Fourier-terén hat, ami sok számítást leegyszerűsít (pl. a konvolúcióból szorzás lesz). Az AFNO lényegében a ViT módszert váltja fel \cite{pathak_fourcastnet_2022, guibas_adaptive_2022}.
 
-Szintén híres MLWP-modell a Huawei által 2023-ban bemutatott Pangu-Weather. A modell egy ún. 3D-s Föld-specifikus transzformer (\textit{3D Earth-Specific Transformer, 3DEST}), melynek szerkezetét az \ref{fig:3DEST}. ábra mutatja be.
+Szintén híres MLWP-modell a Huawei által 2023-ban bemutatott Pangu-Weather. A modell egy ún. 3D-s Föld-specifikus transzformer (\textit{3D Earth-Specific Transformer, 3DEST}), melynek szerkezetét az \ref{fig:3DEST} ábra mutatja be.
 
 \begin{figure}[H]
     \centering
@@ -186,7 +186,7 @@ Szintén híres MLWP-modell a Huawei által 2023-ban bemutatott Pangu-Weather. A
 
 A 3DEST architektúra a bemenő adatokon ún. \textit{patch embedding}et végez, ami során a térbeli felbontást lecsökkenti, és egy 3D-s kockába sűríti. Ezt követően a hálózat a 3D-s adatokat egy enkóder-dekóder architektúrába továbbítja, ami jelen esetben egy Swin-transzformer, ami a ViT egy fajtája. Az enkóder-dekóder architektúra által átalakított adatokon ezt követően \textit{patch recovery}t hajt végre, hogy az eredeti felbontást visszakapjuk. A modell célja középtávú (7+ nap) előrejelzések készítése volt, aminek az eléréséhez egy ún. \textit{hierarchical temporal aggregation} módszert, egy ,,mohó algoritmust" (\textit{greedy algorithm}) alkalmaztak. Mivel a neurális hálózatok rövid időtávra (1, 3, 6, 24 óra) pontosabban tudnak előrejelezni, a hosszabb távú előrejelzéseket rövidebb távúakból hierarchikusan állítják elő. Például ha 56 órára készítenek előrejelzést, először két 24 órás előrejelzést készítenek. A fennmaradó $56-2\cdot24=8$ órát egy 6 órás és 2 db 1 órás előrejelzéssel fedik le. Ezáltal az előrejelzési hibák kevésbé halmozódnak fel, mintha pl. 56 db 1 órás előrejelzést raknának össze \cite{bi_accurate_2023}.
 
-A következő bemutatott modell a Google által szintén 2023-ban publikált, GNN-alapú GraphCast modell. A GNN-ek működése fentebb már említésre került. A modell a számításokat egy ún. \textit{multi-mesh}-en -- magas felbontású, ikozaéderes gráfon -- végzi. A modellben enkóder-processzor-dekóder architektúra található. Az 1 GNN-rétegből álló enkóder 6-szoros iteratív finomítás után az ikozaéder csomópontjait (\textit{node}-jait) a földgömbre vetíti; ezzel létrejönnek $M^0 ... M^6$ rácshálózatok, ahol $M^0$ a legdurvább, $M^6$ pedig a legfinomabb felbontást jelenti. A teljes \textit{multi-mesh} mind a 7 rácshálózatot magában foglalja. A 16 GNN-réteget magában foglaló processzor a \textit{multi-mesh}-en az információ továbbítását tanulja. A szintén 1 GNN-rétegből álló dekóder a \textit{multi-mesh}-en megtanult jellemzőket visszavetíti a földrajzi fokhálózatra. A \textit{multi-mesh} egyik előnye, hogy -- szemben a hagyományos földrajzi fokhálózattal -- térben homogén, nincsen pl. a pólusokon rácsponthalmozódás. A másik előnye, hogy a többféle felbontású rácshálózatokat magában foglaló \textit{multi-mesh}-en hatékonyabb az információ továbbítása: egy távoli pontba pl. először a legdurvább $M^0$-n, majd egyre finomabb rácshálókon halad az információ. A GraphCast modell működését az \ref{fig:graphcast}. ábra szemlélteti \cite{lam_graphcast_2023}.
+A következő bemutatott modell a Google által szintén 2023-ban publikált, GNN-alapú GraphCast modell. A GNN-ek működése fentebb már említésre került. A modell a számításokat egy ún. \textit{multi-mesh}-en -- magas felbontású, ikozaéderes gráfon -- végzi. A modellben enkóder-processzor-dekóder architektúra található. Az 1 GNN-rétegből álló enkóder 6-szoros iteratív finomítás után az ikozaéder csomópontjait (\textit{node}-jait) a földgömbre vetíti; ezzel létrejönnek $M^0 ... M^6$ rácshálózatok, ahol $M^0$ a legdurvább, $M^6$ pedig a legfinomabb felbontást jelenti. A teljes \textit{multi-mesh} mind a 7 rácshálózatot magában foglalja. A 16 GNN-réteget magában foglaló processzor a \textit{multi-mesh}-en az információ továbbítását tanulja. A szintén 1 GNN-rétegből álló dekóder a \textit{multi-mesh}-en megtanult jellemzőket visszavetíti a földrajzi fokhálózatra. A \textit{multi-mesh} egyik előnye, hogy -- szemben a hagyományos földrajzi fokhálózattal -- térben homogén, nincsen pl. a pólusokon rácsponthalmozódás. A másik előnye, hogy a többféle felbontású rácshálózatokat magában foglaló \textit{multi-mesh}-en hatékonyabb az információ továbbítása: egy távoli pontba pl. először a legdurvább $M^0$-n, majd egyre finomabb rácshálókon halad az információ. A GraphCast modell működését az \ref{fig:graphcast} ábra szemlélteti \cite{lam_graphcast_2023}.
 
 \begin{figure}[H]
     \centering
@@ -195,7 +195,7 @@ A következő bemutatott modell a Google által szintén 2023-ban publikált, GN
     \label{fig:graphcast}
 \end{figure}
 
-A Chen et al. által 2023-ban bemutatott FuXi MLWP-modell három részből áll: a kocka beágyazásból (\textit{cube embedding}), egy U-transzformerből, illetve egy egy teljesen összekötött (\textit{fully connected}) rétegből. A \textit{cube embedding} célja a bemenő sokdimenziós adat idő- és térbeli dimenzióinak, ezáltal redundanciájának csökkentése. Az adatok feldolgozását egy U-transzformer végzi. Az adatdimenzió csökkentését egy alulmintavételező egység, a \textit{Down Block} végzi. Ezt követően 48 egymás utáni Swin-transzformer típusú ViT-ből dolgozza fel az adatokat. Végül az adatok dimenziójának növelését egy felülmintavételező egység, az \textit{Up Block} végzi. A modell felépítését az \ref{fig:fuxi}. ábra mutatja be \cite{chen_fuxi_2023}.
+A Chen et al. által 2023-ban bemutatott FuXi MLWP-modell három részből áll: a kocka beágyazásból (\textit{cube embedding}), egy U-transzformerből, illetve egy egy teljesen összekötött (\textit{fully connected}) rétegből. A \textit{cube embedding} célja a bemenő sokdimenziós adat idő- és térbeli dimenzióinak, ezáltal redundanciájának csökkentése. Az adatok feldolgozását egy U-transzformer végzi. Az adatdimenzió csökkentését egy alulmintavételező egység, a \textit{Down Block} végzi. Ezt követően 48 egymás utáni Swin-transzformer típusú ViT-ből dolgozza fel az adatokat. Végül az adatok dimenziójának növelését egy felülmintavételező egység, az \textit{Up Block} végzi. A modell felépítését az \ref{fig:fuxi} ábra mutatja be \cite{chen_fuxi_2023}.
 
 \begin{figure}[H]
     \centering
@@ -220,7 +220,7 @@ A hibanövekedés számszerűsítésére egy ilyen célra gyakran használt menn
 \]
 ahol $u$ és $v$ a horizontális szélkomponensek, Var pedig az ensemble tagok közötti varianciát jelöli \cite{selz_can_2023}. 
 
-A kutatók kis és nagyobb perturbációkat is alkalmaztak; a globálisan átlagolt DKE-re vonatkozó eredményeiket az \ref{fig:selz-pert}. ábra foglalja össze.
+A kutatók kis és nagyobb perturbációkat is alkalmaztak; a globálisan átlagolt DKE-re vonatkozó eredményeiket az \ref{fig:selz-pert} ábra foglalja össze.
 
 \begin{figure}[H]
     \centering
@@ -239,7 +239,7 @@ Ennél olcsóbb módszer lehet az előrejelzési idősorban való kaotikus visel
 
 \subsection{A kaotikus viselkedést jellemző mennyiségek}
 
-A kaotikus rendszereket fázistérben (pl. sebesség--kitérés koordináta-rendszer) ábrázolva komplex, de rendezett, fraktálszerű alakzatot kapunk. A fraktálok olyan geometriai alakzatok, melyek kerülete és felülete nincs definiálva, és önhasonlóak; ezt szemlélteti az \ref{fig:koch}. ábrán feltüntetett híres példa, a Koch-görbe, melynek területe véges marad ugyan, de kerülete a végtelenhez tart \cite{tel_kaotikus_2002}.
+A kaotikus rendszereket fázistérben (pl. sebesség--kitérés koordináta-rendszer) ábrázolva komplex, de rendezett, fraktálszerű alakzatot kapunk. A fraktálok olyan geometriai alakzatok, melyek kerülete és felülete nincs definiálva, és önhasonlóak; ezt szemlélteti az \ref{fig:koch} ábrán feltüntetett híres példa, a Koch-görbe, melynek területe véges marad ugyan, de kerülete a végtelenhez tart \cite{tel_kaotikus_2002}.
 
 \begin{figure}[H]
     \centering
@@ -357,7 +357,7 @@ A megadott szélességi körök időjárását legnagyobb mértékben a mérsék
 Ezen a tértartományon csak a június 1-i, július 1-i, augusztus 1-i, illetve október 1-i adatokat használtam fel, a szeptember 1-i adatokkal való szimuláció során fellépő numerikus instabilitás miatt.
 
 \subsubsection{500 hPa-os szint}
-Az 500 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i trajektória-szimulációkat mutatom be az alábbi, \ref{fig:hun500_traj}. ábrán.
+Az 500 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i trajektória-szimulációkat mutatom be az alábbi, \ref{fig:hun500_traj} ábrán.
 
 \begin{figure}[H]
     \centering
@@ -368,7 +368,7 @@ Az 500 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i t
 
 Megfigyelhető, hogy az AIFS által előrejelzett fonalalak minden esetben jelentősen egyszerűbb, kevesebb finom térbeli struktúrát, feltekeredést tartalmaz. A három bemutatott helyzet közül egyértelműen a június 1-i volt a legbonyolultabb, ezt az AIFS és IFS előrejelzése is alátámasztja.
 
-A fonalhossz időbeli változását szemilogaritmikus skálán ábrázolva, illetve az erre illesztett egyenest a \ref{fig:hun500_top}. ábra mutatja be. Az ábrán az illesztett egyenes mellett fel van tüntetve a 95\%-os konfidenciaintervallum is. Az illesztett egyenest az illesztés hibájával együtt, illetve a konfidenciaintervallumokat a \ref{tab:hun500_top}. táblázatban foglaltam össze. Az 500 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 90 és 168 óra közé határoztam meg az illesztési tartományt.
+A fonalhossz időbeli változását szemilogaritmikus skálán ábrázolva, illetve az erre illesztett egyenest a \ref{fig:hun500_top} ábra mutatja be. Az ábrán az illesztett egyenes mellett fel van tüntetve a 95\%-os konfidenciaintervallum is. Az illesztett egyenest az illesztés hibájával együtt, illetve a konfidenciaintervallumokat a \ref{tab:hun500_top} táblázatban foglaltam össze. Az 500 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 90 és 168 óra közé határoztam meg az illesztési tartományt.
 
 \begin{table}[H]
     \centering
@@ -429,7 +429,7 @@ A fonalhossz időbeli változását szemilogaritmikus skálán ábrázolva, ille
     \label{fig:hun500_top}
 \end{figure}
 
-A topologikus entrópia értékének különböző modellek általi előrejelzését a szemléltetés érdekében diagramon ábrázoltam (\ref{fig:hun500_top_bar}. ábra). Feltüntettem az AIFS és IFS által előrejelzett topologikus entrópia hányadosát is.
+A topologikus entrópia értékének különböző modellek általi előrejelzését a szemléltetés érdekében diagramon ábrázoltam (\ref{fig:hun500_top_bar} ábra). Feltüntettem az AIFS és IFS által előrejelzett topologikus entrópia hányadosát is.
 
 \begin{figure}[H]
     \centering
@@ -441,7 +441,7 @@ A topologikus entrópia értékének különböző modellek általi előrejelzé
 Megfigyelhető, hogy az AIFS előrejelzései alapján számolt topologikus entrópia minden esetben jelentősen alulmúlja az IFS előrejelzései alapján számoltat. Az eltérés jelentős: legnagyobb az eltérés augusztusban (48\%-a az AIFS az IFS-nek), a legkisebb pedig júniusban (73\%). Az eltérés mögött valószínűleg az elmosás jelensége áll: a neurális hálózat alapú előrejelző modell, az AIFS, négyzetes középérték hiba (MSE) alapú költségfüggvény minimalizálására van betanítva, melynek következtében a (helytelen) kiugró értékek előrejelzése a tanulás során büntetést von maga után. Ennek következtében a modell tehát igyekszik elkerülni kiugró értékek előrejelzését, és inkább egy ,,elmosott", átlagos meteorológiai mezőt jelez előre. Az elmosás hatását megfigyelhettük a fonalalak változását bemutató térképeken is: az AIFS által előrejelzett fonalalak jóval egyszerűbb térbeli struktúrájú volt, mint a fizikai egyenleteket megoldó IFS-é. Az átlagos értékek előrejelzésére való hajlam tehát kvalitatívan és kvantitatívan is egyértelműen megjelenik.
 
 \subsubsection{700 hPa-os szint}
-A 700 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i trajektória-szimulációkat mutatom be a \ref{fig:hun700_traj}. ábrán.
+A 700 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i trajektória-szimulációkat mutatom be a \ref{fig:hun700_traj} ábrán.
 
 \begin{figure}[H]
     \centering
@@ -450,7 +450,7 @@ A 700 hPa-os szintről a 2026. június 1-i, július 1-i, illetve október 1-i tr
     \label{fig:hun700_traj}
 \end{figure}
 
-Megfigyelhető, hogy az AIFS által előrejelzett fonalalak ismét egyszerűbb térbeli struktúrájú, mint az IFS-é. A \ref{tab:hun700_top}. táblázat a megfigyeléseket kvantitatívan mutatja be. A \ref{fig:hun700_top}. ábrán az illesztéseket a konfidenciaintervallummal is ábrázoltam. A 700 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 75 és 168 óra közé határoztam meg az illesztési tartományt.
+Megfigyelhető, hogy az AIFS által előrejelzett fonalalak ismét egyszerűbb térbeli struktúrájú, mint az IFS-é. A \ref{tab:hun700_top} táblázat a megfigyeléseket kvantitatívan mutatja be. A \ref{fig:hun700_top} ábrán az illesztéseket a konfidenciaintervallummal is ábrázoltam. A 700 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 75 és 168 óra közé határoztam meg az illesztési tartományt.
 
 \begin{table}[H]
     \centering
@@ -520,7 +520,7 @@ Hasonlóan az 500 hPa-os szinthez, itt is ábrázoltam a kapott topologikus entr
     \label{fig:hun700_top_bar}
 \end{figure}
 
-A \ref{fig:hun700_top_bar}. ábra alapján látható, hogy az augusztus az IFS számára ,,bonyolultabb" volt, mint a június; ezzel szemben az AIFS ,,kevésbé kaotikusnak" érezte az augusztust, mint a júniust. Az AIFS és IFS előrejelzése között átlagosan 0,4\%-kal nagyobb az eltérés, mint 500 hPa-on -- ez azt jelenti, hogy minimálisan jobban megjelenik az AIFS elmosása 700 hPa-on.
+A \ref{fig:hun700_top_bar} ábra alapján látható, hogy az augusztus az IFS számára ,,bonyolultabb" volt, mint a június; ezzel szemben az AIFS ,,kevésbé kaotikusnak" érezte az augusztust, mint a júniust. Az AIFS és IFS előrejelzése között átlagosan 0,4\%-kal nagyobb az eltérés, mint 500 hPa-on -- ez azt jelenti, hogy minimálisan jobban megjelenik az AIFS elmosása 700 hPa-on.
 
 
 \subsubsection{850 hPa-os szint}
@@ -535,7 +535,7 @@ A 850 hPa-os szinten is a 2026. június 1-i, július 1-i, illetve október 1-i t
 
 A bemutatott időpontokhoz tartozó ábrán szembetűnő, hogy az AIFS által előrejelzett fonal alakja jelentősen egyszerűbb térbeli struktúrájú, mint az IFS-é, mintha az AIFS fonalát az IFS fonalának kisimításával kapnánk. 
 
-A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanságával együtt, illetve a 95\%-os konfidenciaintervallumot tüntettem fel. A \ref{fig:hun850_top}. ábrán az egyenesillesztések a konfidenciaintervallummal együtt vannak ábrázolva. A 850 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 50 és 168 óra közé határoztam meg az illesztési tartományt.
+A \ref{tab:hun850_top} táblázatban a fonalhosszra illesztést bizonytalanságával együtt, illetve a 95\%-os konfidenciaintervallumot tüntettem fel. A \ref{fig:hun850_top} ábrán az egyenesillesztések a konfidenciaintervallummal együtt vannak ábrázolva. A 850 hPa-os szinten a fonalhossz időfüggését ábrázolva -- a tranziens szakasz kihagyása érdekében -- 50 és 168 óra közé határoztam meg az illesztési tartományt.
 
 \begin{table}[H]
     \centering
@@ -598,7 +598,7 @@ A \ref{tab:hun850_top}. táblázatban a fonalhosszra illesztést bizonytalanság
 
 850 hPa-on (kb. 1500 m) erőteljesebben megfigyelhető a topologikus entrópia változása, a függvény ,,hullámzása", aminek oka a domborzat lehet.
 
-A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar}. ábrán mutatom be. Ismét észrevehető, hogy az AIFS topologikus entrópiája minden esetben alulmúlja az IFS-ét, átlagosan 61\%-a az AIFS előrejelzése az IFS előrejelzésének. A vizsgált nyomási szintek közül itt van átlagosan a legközelebb a két előrejelzés egymáshoz. A legközelebb a két előrejelzés júniusban, a legtávolabb augusztusban van. 
+A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar} ábrán mutatom be. Ismét észrevehető, hogy az AIFS topologikus entrópiája minden esetben alulmúlja az IFS-ét, átlagosan 61\%-a az AIFS előrejelzése az IFS előrejelzésének. A vizsgált nyomási szintek közül itt van átlagosan a legközelebb a két előrejelzés egymáshoz. A legközelebb a két előrejelzés júniusban, a legtávolabb augusztusban van. 
 
 \begin{figure}[H]
     \centering
@@ -613,7 +613,7 @@ A topologikus entrópiákat, illetve azok arányát a \ref{fig:hun850_top_bar}. 
 A poláris jet stream nagyon erős nyugati irányú szél (sebessége kb. 180 km/h), mely a troposzféra tetején (kb. 9 km magasan) fúj. Az elhelyezkedésének megfelelően a vizsgált szintek közül 500 hPa-on látszik a legjobban, bár hatása a földfelszínhez közelebb is megjelenik. A poláris jet stream hullámzása miatt a részecskék változatos trajektóriákon mozoghatnak, indulhatnak keletre, északra, vagy délre is, a jet stream hullámainak megfelelően.
 
 \subsubsection{500 hPa-os szint}
-A június 1-i, július 1-i, illetve október 1-i ECMWF-modellfutások alapján készült trajektóriaelőrejelzéseket mutatja be a \ref{fig:jet500_traj}. ábra.
+A június 1-i, július 1-i, illetve október 1-i ECMWF-modellfutások alapján készült trajektóriaelőrejelzéseket mutatja be a \ref{fig:jet500_traj} ábra.
 
 \begin{figure}[H]
     \centering
@@ -624,7 +624,7 @@ A június 1-i, július 1-i, illetve október 1-i ECMWF-modellfutások alapján k
 
 A fonalalak változásából levonható következtetések alátámasztják a korábban megállapítottakat. Az október 1-i futáson készült trajektóriaelőrejelzésnél különösen szembetűnő az AIFS elmosása. Érdemes megfigyelni azt is, hogy amennyiben a fonal részecskéi nagyon szétterjednek, a kialakult fonalalak már kevésbé függ a kiindulási helytől, hiszen ebben az esetben már ugyanazok a légköri képződmények határozzák meg a mozgását és nyúlását. Ez jól megfigyelhető például a \ref{fig:jet500_traj} (a)-(b) és a \ref{fig:hun500_traj} (a)-(b) ábra összehasonlításakor.
 
-A topologikus entrópia meghatározásához szükséges illesztéseket, illetve azok eredményeképpen kapott értékeket bizonytalanságukkal együtt a \ref{tab:jet500_top}. táblázat és \ref{fig:jet500_top}. ábra szemlélteti. Az illesztés a futási idő 90. és 160. órája között történt.
+A topologikus entrópia meghatározásához szükséges illesztéseket, illetve azok eredményeképpen kapott értékeket bizonytalanságukkal együtt a \ref{tab:jet500_top} táblázat és \ref{fig:jet500_top} ábra szemlélteti. Az illesztés a futási idő 90. és 160. órája között történt.
 
 \begin{table}[H]
     \centering
@@ -685,7 +685,7 @@ A topologikus entrópia meghatározásához szükséges illesztéseket, illetve 
     \label{fig:jet500_top}
 \end{figure}
 
-A topologikus entrópiákat egymáshoz viszonyítva a \ref{fig:jet500_top_bar}. ábra mutatja be.
+A topologikus entrópiákat egymáshoz viszonyítva a \ref{fig:jet500_top_bar} ábra mutatja be.
 
 \begin{figure}[H]
     \centering
@@ -694,7 +694,7 @@ A topologikus entrópiákat egymáshoz viszonyítva a \ref{fig:jet500_top_bar}. 
     \label{fig:jet500_top_bar}
 \end{figure}
 
-Az AIFS által előrejelzett topologikus entrópia ismét minden esetben kisebb, mint az IFS-é. A legnagyobb eltérés augusztusban, a legkisebb (90\%-os egyezés) júliusban tapasztalható. Megfigyelve a \ref{fig:jet500_traj}. ábrán a júliust bemutató térképrészletet, látható, hogy ekkor rendkívül egyszerű áramlás jellemezhette a térséget: a fonalak nem távolodtak messzire, és alakjuk se lett nagyon bonyolult -- még az IFS előrejelzése szerint sem. A két modell különösen hasonló előrejelzése mögött húzódó meteorológiai hátteret -- az egyszerű és viszonylag gyenge áramlási mezőt -- mutatja be a \ref{fig:simple_flow}. ábra.
+Az AIFS által előrejelzett topologikus entrópia ismét minden esetben kisebb, mint az IFS-é. A legnagyobb eltérés augusztusban, a legkisebb (90\%-os egyezés) júliusban tapasztalható. Megfigyelve a \ref{fig:jet500_traj} ábrán a júliust bemutató térképrészletet, látható, hogy ekkor rendkívül egyszerű áramlás jellemezhette a térséget: a fonalak nem távolodtak messzire, és alakjuk se lett nagyon bonyolult -- még az IFS előrejelzése szerint sem. A két modell különösen hasonló előrejelzése mögött húzódó meteorológiai hátteret -- az egyszerű és viszonylag gyenge áramlási mezőt -- mutatja be a \ref{fig:simple_flow} ábra.
 
 \begin{figure}[H]
     \centering
@@ -704,7 +704,7 @@ Az AIFS által előrejelzett topologikus entrópia ismét minden esetben kisebb,
 \end{figure}
 
 \subsubsection{700 hPa-os szint}
-A június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések alapján készült fonalalak-előrejelzést a \ref{fig:jet700_traj}. ábra mutatja.
+A június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések alapján készült fonalalak-előrejelzést a \ref{fig:jet700_traj} ábra mutatja.
 
 \begin{figure}[H]
     \centering
@@ -713,7 +713,7 @@ A június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések ala
     \label{fig:jet700_traj}
 \end{figure}
 
-Az AIFS előrejelzése mindenhol egyszerűbb fonalalakot vár. A topologikus entrópiákat számszerűen a \ref{tab:jet700_top}. táblázat és \ref{fig:jet700_top}. ábra mutatja be. Az illesztés az előrejelzés 75. és 168. órája között történt.
+Az AIFS előrejelzése mindenhol egyszerűbb fonalalakot vár. A topologikus entrópiákat számszerűen a \ref{tab:jet700_top} táblázat és \ref{fig:jet700_top} ábra mutatja be. Az illesztés az előrejelzés 75. és 168. órája között történt.
 
 \begin{table}[H]
     \centering
@@ -774,7 +774,7 @@ Az AIFS előrejelzése mindenhol egyszerűbb fonalalakot vár. A topologikus ent
     \label{fig:jet700_top}
 \end{figure}
 
-A topologikus entrópiákat egymáshoz hasonlítva (\ref{fig:jet700_top_bar}. ábra) az előzőekhez hasonló megállapítás vonható le: az AIFS topologikus entrópiája kisebb, átlagosan 61\%-a az IFS-ének. Legközelebb egymáshoz júniusban, legtávolabb júliusban vannak.
+A topologikus entrópiákat egymáshoz hasonlítva (\ref{fig:jet700_top_bar} ábra) az előzőekhez hasonló megállapítás vonható le: az AIFS topologikus entrópiája kisebb, átlagosan 61\%-a az IFS-ének. Legközelebb egymáshoz júniusban, legtávolabb júliusban vannak.
 
 \begin{figure}[H]
     \centering
@@ -785,7 +785,7 @@ A topologikus entrópiákat egymáshoz hasonlítva (\ref{fig:jet700_top_bar}. á
 
 
 \subsubsection{850 hPa-os szint}
-A 2026. június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések alapján készült fonalalak-előrejelzést a \ref{fig:jet850_traj}. ábra mutatja.
+A 2026. június 1-i, július 1-i és október 1-i futtatású szélelőrejelzések alapján készült fonalalak-előrejelzést a \ref{fig:jet850_traj} ábra mutatja.
 
 \begin{figure}[H]
     \centering
@@ -794,7 +794,7 @@ A 2026. június 1-i, július 1-i és október 1-i futtatású szélelőrejelzés
     \label{fig:jet850_traj}
 \end{figure}
 
-Az AIFS és IFS által előrejelzett fonalalak-változás a megszokott képet mutatja, az AIFS egyszerűbb alakot prediktál. A számszerű adatok a \ref{tab:jet850_top}. táblázatban, illetve \ref{fig:jet850_top}. ábrán láthatók.
+Az AIFS és IFS által előrejelzett fonalalak-változás a megszokott képet mutatja, az AIFS egyszerűbb alakot prediktál. A számszerű adatok a \ref{tab:jet850_top} táblázatban, illetve \ref{fig:jet850_top} ábrán láthatók.
 
 \begin{table}[H]
     \centering
@@ -855,7 +855,7 @@ Az AIFS és IFS által előrejelzett fonalalak-változás a megszokott képet mu
     \label{fig:jet850_top}
 \end{figure}
 
-A fonalhossz időbeli változása augusztusban és októberben nagyobb hullámzásokat mutat, melynek oka valószínűleg a domborzat. A topologikus entrópiák egymáshoz hasonlításából (\ref{fig:jet850_top_bar}. ábra) levonható következtetés megegyezik a korábban észrevettekkel: az AIFS alulmúlja az IFS-t, most átlagosan 57\%-a az AIFS topologikus entrópiája az IFS-ének. Legközelebb júniusban (az egyezés 76\%), legmesszebb augusztusban vannak (ekkor csupán 31\%-a az AIFS által előrejelzett érték az IFS-ének).
+A fonalhossz időbeli változása augusztusban és októberben nagyobb hullámzásokat mutat, melynek oka valószínűleg a domborzat. A topologikus entrópiák egymáshoz hasonlításából (\ref{fig:jet850_top_bar} ábra) levonható következtetés megegyezik a korábban észrevettekkel: az AIFS alulmúlja az IFS-t, most átlagosan 57\%-a az AIFS topologikus entrópiája az IFS-ének. Legközelebb júniusban (az egyezés 76\%), legmesszebb augusztusban vannak (ekkor csupán 31\%-a az AIFS által előrejelzett érték az IFS-ének).
 
 \begin{figure}[H]
     \centering
@@ -869,7 +869,7 @@ A fonalhossz időbeli változása augusztusban és októberben nagyobb hullámz�
 Az északi félteke passzátszeleinek tartományából is indítottam egy sodródó fonalat (részecskéket). A passzátszelek az északi féltekén északkeleti irányúak, nem túl erősek, de jó közelítéssel állandóan hasonló irányból és sebességgel fújnak. Ezért arra számítottam, hogy a topologikus entrópia a többi vizsgált földrajzi területnél alacsonyabb lesz az egyszerűbb áramlás miatt. A passzátszelek térségében már fel tudtam használni a szeptemberi adatokat is.
 
 \subsubsection{500 hPa-os szint}
-A 2026. július 1., szeptember 1., illetve október 1. kezdetű szélelőrejelzések alapján készült fonalalak-előrejelzést mutatom be a \ref{fig:trade500_traj}. ábrán.
+A 2026. július 1., szeptember 1., illetve október 1. kezdetű szélelőrejelzések alapján készült fonalalak-előrejelzést mutatom be a \ref{fig:trade500_traj} ábrán.
 
 \begin{figure}[H]
     \centering
@@ -880,7 +880,7 @@ A 2026. július 1., szeptember 1., illetve október 1. kezdetű szélelőrejelz�
 
 Észrevehető a korábban tapasztaltakhoz képest mindkét modell esetében a rövidebb, egyszerűbb alakú fonal, melynek hátterében a passzátszelek gyengébb változékonysága állhat. Az AIFS IFS-éhez képesti kisimítottabb fonala itt is megfigyelhető. Az októberi IFS futás szerint a részecskék a Himaláját is elérték, melynek magassága az 500 hPa-os szintet is eléri, így ott a fonal bonyolulabb alakot vett fel.
 
-Az topologikus entrópia értékeit a \ref{tab:trade500_top}. táblázat, illetve \ref{fig:trade500_top}. ábra mutatja be.
+Az topologikus entrópia értékeit a \ref{tab:trade500_top} táblázat, illetve \ref{fig:trade500_top} ábra mutatja be.
 
 \begin{table}[H]
     \centering
@@ -952,13 +952,13 @@ Az topologikus entrópia értékeit a \ref{tab:trade500_top}. táblázat, illetv
 
 A \ref{fig:trade500_top} ábrán az előzőektől jelentősen eltérő eredmények figyelhetőek meg. A júniusi előrejelzésben kb. az előrejelzés 90. órájáig szinte teljesen együtt halad az AIFS és IFS által előrejelzett fonalhossz. Ez azt jelenti, hogy egyformán kaotikus a két modell felhasználásával számolt terjedés kb. 90 órán át. A 90. órától kezdve szétnyílik az olló, és -- megszokott módon -- az IFS rendelkezik nagyobb topologikus entrópiával.
 
-A júliusi előrejelzésben erős hullámzás figyelhető meg, azonban érdemes megfigyelni az $y$ tengelyt is: végig egy nagyságrenden belül marad a fonal hossza. Ez figyelhető meg a \ref{fig:trade500_traj}. ábrán is: a fonal alig nyúlik meg. 
+A júliusi előrejelzésben erős hullámzás figyelhető meg, azonban érdemes megfigyelni az $y$ tengelyt is: végig egy nagyságrenden belül marad a fonal hossza. Ez figyelhető meg a \ref{fig:trade500_traj} ábrán is: a fonal alig nyúlik meg. 
 
 Az augusztusi, illetve szeptemberi előrejelzéseknél a magasabb szélességekhez hasonló viselkedés, a tranziens szakasz után jó közelítéssel állandó -- az IFS esetében nagyobb -- topologikus entrópiára való beállás figyelhető meg. 
 
 Októberben észrevehető, hogy az AIFS és IFS által előrejelzett fonalhosszban szétválás következik be. Ennek oka az lehet, hogy míg az IFS szélelőrejelzése szerint a részecskék a Himalájáig is eljutottak, ami hatása már az 500 hPa-os szinten is észlelhető, addig az AIFS előrejelzése szerint nem érték el a részecskék a hegységet. Így az IFS bonyolultabb, hosszabb fonalalakot jelzett előre, mint az AIFS.
 
-A topologikus entrópiákat a \ref{fig:trade500_top_bar}. oszlopdiagramon is ábrázoltam. 
+A topologikus entrópiákat a \ref{fig:trade500_top_bar} oszlopdiagramon is ábrázoltam. 
 
 \begin{figure}[H]
     \centering
@@ -967,10 +967,10 @@ A topologikus entrópiákat a \ref{fig:trade500_top_bar}. oszlopdiagramon is áb
     \label{fig:trade500_top_bar}
 \end{figure}
 
-Meglepő, hogy egyetlen esetben, júliusban az AIFS topologikus entrópiája 136\%-a az IFS-ének. Ha megfigyeljük a \ref{fig:trade500_top}. ábrán a releváns illesztést, észrevehető, hogy az illesztés nem jó, nem is azonosítható konstans exponenciális növekedésű szakasz. Ennek oka lehet, hogy a fonal hossza nem növekedett meg eléggé, és a kapott nagyobb topologikus entrópia ellenére is a vizsgált időszak végéig jóval kisebb az AIFS-beli fonal hossza, mint az IFS-belié. Ezek következtében ebből a tapasztalatból nem lehet általános következtetéseket levonni. A többi időpontra vonatkozóan a szokásos eredményeket kaptam: a júliusi anomália kihagyásával az AIFS topologikus entrópiája átlagosan 63\%-a az IFS-ének. Legnagyobb eltérés októberben, a legkisebb augusztusban figyelhető meg.
+Meglepő, hogy egyetlen esetben, júliusban az AIFS topologikus entrópiája 136\%-a az IFS-ének. Ha megfigyeljük a \ref{fig:trade500_top} ábrán a releváns illesztést, észrevehető, hogy az illesztés nem jó, nem is azonosítható konstans exponenciális növekedésű szakasz. Ennek oka lehet, hogy a fonal hossza nem növekedett meg eléggé, és a kapott nagyobb topologikus entrópia ellenére is a vizsgált időszak végéig jóval kisebb az AIFS-beli fonal hossza, mint az IFS-belié. Ezek következtében ebből a tapasztalatból nem lehet általános következtetéseket levonni. A többi időpontra vonatkozóan a szokásos eredményeket kaptam: a júliusi anomália kihagyásával az AIFS topologikus entrópiája átlagosan 63\%-a az IFS-ének. Legnagyobb eltérés októberben, a legkisebb augusztusban figyelhető meg.
 
 \subsubsection{700 hPa-os szint}
-A \ref{fig:trade700_traj}. ábrán a július 1-i, szeptember 1-i, illetve október 1-i indítású fonalalak-előrejelzéseket mutatom be.
+A \ref{fig:trade700_traj} ábrán a július 1-i, szeptember 1-i, illetve október 1-i indítású fonalalak-előrejelzéseket mutatom be.
 
 \begin{figure}[H]
     \centering
@@ -983,7 +983,7 @@ A fonal alakja hasonló az 500 hPa-on tapasztalthoz. Júliusban és szeptemberbe
 
 Bonyolultabb alakú fonal csak az októberi előrejelzésben figyelhető meg, ennek oka az lehet, hogy a részecskék már elérték a Himaláját, illetve az azt környékező, 3000 m-t meghaladó hegységeket.
 
-Az illesztéseket bizonytalanságukkal együtt a \ref{tab:trade700_top}. táblázat és \ref{fig:trade700_top}. ábra mutatják be.
+Az illesztéseket bizonytalanságukkal együtt a \ref{tab:trade700_top} táblázat és \ref{fig:trade700_top} ábra mutatják be.
 
 \begin{table}[H]
     \centering
@@ -1053,7 +1053,7 @@ Az illesztéseket bizonytalanságukkal együtt a \ref{tab:trade700_top}. táblá
     \label{fig:trade700_top}
 \end{figure}
 
-A 700 hPa-on tapasztalható időbeli fonalhossz-változások sokkal hullámosabbak, mint 500 hPa-on voltak, így illeszteni is nehezebben lehetett. Az AIFS topologikus entrópiája minden esetben alacsonyabb volt az IFS-énél, melyet a \ref{fig:trade700_top_bar}. ábra is szemléltet.
+A 700 hPa-on tapasztalható időbeli fonalhossz-változások sokkal hullámosabbak, mint 500 hPa-on voltak, így illeszteni is nehezebben lehetett. Az AIFS topologikus entrópiája minden esetben alacsonyabb volt az IFS-énél, melyet a \ref{fig:trade700_top_bar} ábra is szemléltet.
 
 \begin{figure}[H]
     \centering
@@ -1067,7 +1067,7 @@ Az AIFS által előrejelzett topologikus entrópia átlagosan 62\%-a volt az IFS
 \subsubsection{850 hPa-os szint}
 A várakozásaim szerint 850 hPa-on lesz a passzátszelek tartományában a legbonyolultabb és leghosszabb fonalalak, mivel 1500 m-en már a domborzat hatása is erősen érződik, illeve a Hadley-cella trópusok felé visszatérő ágának is nagyobb hatása van.
 
-A fonalalakokat a \ref{fig:trade850_traj}. ábra mutatja be július 1-én, szeptember 1-én és október 1-én indított előrejelzések alapján az előrejelzés 168. órájában.
+A fonalalakokat a \ref{fig:trade850_traj} ábra mutatja be július 1-én, szeptember 1-én és október 1-én indított előrejelzések alapján az előrejelzés 168. órájában.
 
 \begin{figure}[H]
     \centering
@@ -1076,7 +1076,7 @@ A fonalalakokat a \ref{fig:trade850_traj}. ábra mutatja be július 1-én, szept
     \label{fig:trade850_traj}
 \end{figure}
 
-A várakozásoknak megfelelően alakultak a fonalak, bár általában a kontinensen belül maradtak. A topologikus entrópiák illesztését, illetve számszerűsítésüket a \ref{fig:trade850_top}. ábra és \ref{tab:trade850_top}. táblázat mutatja be.
+A várakozásoknak megfelelően alakultak a fonalak, bár általában a kontinensen belül maradtak. A topologikus entrópiák illesztését, illetve számszerűsítésüket a \ref{fig:trade850_top} ábra és \ref{tab:trade850_top} táblázat mutatja be.
 
 \begin{table}[H]
     \centering
@@ -1147,7 +1147,7 @@ A várakozásoknak megfelelően alakultak a fonalak, bár általában a kontinen
     \label{fig:trade850_top}
 \end{figure}
 
-A fonalhossz időbeli változásában nagyon erős hullámzás figyelhető meg, melynek fő oka a 850 hPa-on már nagyobb hatással bíró domborzat lehet. A topologikus entrópiák számszerű összehasonlítását a \ref{fig:trade850_top_bar}. ábra mutatja be. Szembetűnő, hogy az AIFS topologikus entrópiája júniusban és augusztusban jelentősen kisebb, mint az IFS-é.
+A fonalhossz időbeli változásában nagyon erős hullámzás figyelhető meg, melynek fő oka a 850 hPa-on már nagyobb hatással bíró domborzat lehet. A topologikus entrópiák számszerű összehasonlítását a \ref{fig:trade850_top_bar} ábra mutatja be. Szembetűnő, hogy az AIFS topologikus entrópiája júniusban és augusztusban jelentősen kisebb, mint az IFS-é.
 
 \begin{figure}[H]
     \centering
@@ -1168,7 +1168,7 @@ Az összes szimuláció eredményeképpen egybehangzó eredményként kaptam, ho
 
 A földrajzi helyfüggést is megfigyeltem: a legbonyolultabb áramlás a vizsgált tartományok közül a k.h. 20$^\circ$ mentén az é.sz. $[45^\circ, 55^\circ]$ tartományban, a legsimább a passzátszelek területén volt. 
 
-A nyomási szinttől is függött a modellelőrejelzések kaotikussága: az IFS-nél a földfelszínhez közelebbi szinteken egyértelműen nagyobb volt a topologikus entrópia, az AIFS esetében nem volt ennyire egyértelmű a növekedés, minden szinten átlagosan szinte ugyanakkora volt a topologikus entrópia. Ezt szemlélteti a \ref{fig:h_p_dependence}. ábra, ahol a topologikus entrópia átlagos értékét ábrázoltam modellenként a nyomási szint függvényében.
+A nyomási szinttől is függött a modellelőrejelzések kaotikussága: az IFS-nél a földfelszínhez közelebbi szinteken egyértelműen nagyobb volt a topologikus entrópia, az AIFS esetében nem volt ennyire egyértelmű a növekedés, minden szinten átlagosan szinte ugyanakkora volt a topologikus entrópia. Ezt szemlélteti a \ref{fig:h_p_dependence} ábra, ahol a topologikus entrópia átlagos értékét ábrázoltam modellenként a nyomási szint függvényében.
 
 \begin{figure}[H]
     \centering
@@ -1198,7 +1198,7 @@ Nyilatkozom, hogy dolgozatom elkészítése során nem használtam mesterséges 
         nyelvhelyességi tanácsok & Gemini 3.1 Pro & 
         teljes dolgozat & \\\hline
 
-        szövegszerkesztés & Gemini 3.1 Pro, Gemini 4 Hydrogen & teljes dolgozat & \LaTeX parancsokban segítség, stilisztikai tanácsok\\\hline
+        szövegszerkesztés & Gemini 3.1 Pro, Gemini 4 Hydrogen & teljes dolgozat & \LaTeX   parancsokban segítség, stilisztikai tanácsok\\\hline
 
         forrásértelmezés & Gemini 3.5 Flash-Lite, Gemini 3.1 Pro & Bevezetés fejezet & segítség bonyolultabb koncepciók megértésében, szövegértelmezésben \\\hline
 
